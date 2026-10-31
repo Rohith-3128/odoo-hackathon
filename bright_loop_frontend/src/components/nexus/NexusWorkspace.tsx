@@ -66,7 +66,7 @@ export const NexusWorkspace: React.FC<NexusWorkspaceProps> = ({
   );
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#fafafa', color: '#0a0a0a' }}>
+    <div style={{ display: 'flex', height: '100vh', maxHeight: '100vh', width: '100vw', overflow: 'hidden', background: '#fafafa', color: '#0a0a0a' }}>
       {/* Sidebar Navigation */}
       <aside
         style={{
@@ -77,8 +77,8 @@ export const NexusWorkspace: React.FC<NexusWorkspaceProps> = ({
           flexDirection: 'column',
           justifyContent: 'space-between',
           flexShrink: 0,
-          position: 'sticky',
-          top: 0,
+          maxHeight: '100vh',
+          overflowY: 'auto',
           height: '100vh',
           zIndex: 50,
         }}
@@ -294,7 +294,7 @@ export const NexusWorkspace: React.FC<NexusWorkspaceProps> = ({
       </aside>
 
       {/* Main Content Area */}
-      <main style={{ flex: 1, padding: '36px 48px', maxWidth: '1300px', width: '100%', overflowX: 'hidden' }}>
+      <main style={{ flex: 1, height: '100vh', maxHeight: '100vh', overflowY: 'auto', overflowX: 'hidden', padding: '36px 48px', boxSizing: 'border-box', width: 'calc(100% - 260px)' }}>
         {activeTab === 'dashboard' && (
           <DashboardView
             onNavigate={(tab) => setActiveTab(tab)}
