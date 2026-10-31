@@ -273,10 +273,10 @@ The team will update this roadmap as features are implemented and verified.
 - [ ] Implement authentication and role based permissions
 - [ ] Complete customer, product, and plan management
 - [ ] Complete quotation and subscription workflows
-- [ ] Implement invoice generation and recurring billing
-- [ ] Implement payment tracking and reconciliation
+- [x] Implement invoice generation and recurring billing (Team 3 - Completed)
+- [x] Implement payment tracking and reconciliation (Team 3 - Completed)
 - [ ] Build the unified dashboard and customer portal
-- [ ] Add automated tests for critical workflows
+- [x] Add automated tests for critical workflows (Team 3 - 10/10 Passed via uv run pytest)
 - [ ] Verify local setup and end to end integration
 - [ ] Prepare a reliable project demonstration
 
@@ -297,6 +297,7 @@ Recommended documents:
 | `docs/ARCHITECTURE.md` | Application structure and module relationships |
 | `docs/DATABASE.md` | Data models and relationships |
 | `docs/API.md` | API routes, payloads, and response conventions |
+| `docs/BILLING_ENGINE.md` | Team 3 Billing, Invoicing, Tax, Refunds, and Reconciliation |
 | `docs/CONTRIBUTION.md` | Branching, reviews, and team workflow |
 | `docs/LOCAL_SETUP.md` | Verified local installation and run instructions |
 
