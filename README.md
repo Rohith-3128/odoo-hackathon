@@ -278,10 +278,11 @@ Detailed documentation is available in the [`docs/`](docs/) directory:
 | Document | Purpose |
 | --- | --- |
 | [`docs/BILLING_ENGINE.md`](docs/BILLING_ENGINE.md) | Team 3: Billing architecture, models, GST tax rules, discounts, refunds, and reconciliation |
-| `docs/ARCHITECTURE.md` | Application structure and module relationships |
-| `docs/DATABASE.md` | Data models and entity relationships |
-| `docs/API.md` | API routes, payloads, and response conventions |
-| `docs/CONTRIBUTION.md` | Branching, reviews, and team workflow |
+| [docs/WORKFLOW_ENGINE.md](docs/WORKFLOW_ENGINE.md) | Team 2: Workflow architecture, state machines, proration, and renewal engine |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System overview, module boundaries, integration contracts, and security architecture |
+| [docs/DATABASE.md](docs/DATABASE.md) | Normalized relational models, schema design, constraints, and audit logging |
+| [docs/API.md](docs/API.md) | Standard REST API endpoints, auth headers, pagination, and error envelopes |
+| [docs/CONTRIBUTION.md](docs/CONTRIBUTION.md) | Branching matrix, commit standards, pull request protocol, and local testing |
 
 ---
 

@@ -28,3 +28,12 @@ dist-ssr/
 # OS
 .DS_Store
 Thumbs.db
+
+# Databases & Local Artifacts
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+*.pdf
+
