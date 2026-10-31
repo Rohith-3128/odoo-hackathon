@@ -4,6 +4,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { billingRoutes, createBillingDB } from './src/billing/billing_routes';
 import { workflowRoutes } from './src/workflow/workflow_routes';
+import { getDatabase } from './src/foundation/db';
+import { seedFoundationDatabase } from './src/foundation/seed';
+import { foundationRoutes } from './src/foundation/foundation_routes';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -405,6 +408,30 @@ async function startServer() {
   const PORT = 3000;
 
   app.use(express.json());
+
+  // Teammate 1: Foundation, Auth & Persistent Relational Database
+  const persistentDb = getDatabase();
+  seedFoundationDatabase(persistentDb);
+  app.use('/api', foundationRoutes(persistentDb));
+
+  // Sync compatibility cache with persistent database
+  try {
+    const dbUsers = persistentDb.query<any>('SELECT id, name, email, role, customer_id as customerId FROM users');
+    const dbCustomers = persistentDb.query<any>('SELECT id, name, company, email, phone, address, status, created_at as createdAt FROM customers');
+    const dbProducts = persistentDb.query<any>('SELECT id, name, description, active FROM products');
+    const dbPlans = persistentDb.query<any>('SELECT id, product_id as productId, name, billing_interval as billingInterval, price, currency, features, active FROM subscription_plans');
+    if (dbUsers.length > 0) DB.users = dbUsers;
+    if (dbCustomers.length > 0) DB.customers = dbCustomers;
+    if (dbProducts.length > 0) DB.products = dbProducts;
+    if (dbPlans.length > 0) {
+      DB.plans = dbPlans.map(p => ({
+        ...p,
+        features: typeof p.features === 'string' ? JSON.parse(p.features) : p.features,
+      }));
+    }
+  } catch (err: any) {
+    console.warn('Persistent DB cache sync note:', err.message);
+  }
 
   // Teammate 3: Billing & Financial Engine APIs
   const billingDB = createBillingDB();

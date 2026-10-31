@@ -177,7 +177,15 @@ npm run dev
 
 The application runs on `http://localhost:3000`.
 
-### 2. Run the Workflow Engine Test Suite (Team 2)
+### 2. Run the Foundation Test Suite (Team 1)
+
+```powershell
+cd bright_loop_frontend
+npm run test:foundation
+```
+*Executes 18 automated tests covering relational migrations, ACID transactions, PBKDF2 cryptography, session tokens, RBAC permissions, customer management, plan versioning, and multi-tenancy.*
+
+### 3. Run the Workflow Engine Test Suite (Team 2)
 
 ```powershell
 cd bright_loop_frontend
@@ -185,7 +193,7 @@ npm test
 ```
 *Executes 23 automated tests covering quotation calculations, state transitions, revisions, subscriptions lifecycle, upgrades/downgrades with proration, renewals, and cancellations.*
 
-### 3. Run the Billing Engine Test Suite (Team 3 with `uv`)
+### 4. Run the Billing Engine Test Suite (Team 3 with `uv`)
 
 ```powershell
 cd billing_engine
@@ -257,7 +265,12 @@ Every feature is developed and verified against these standards:
 - [x] Implement automated renewal engine and billing period key idempotency (`team2/workflow` - Completed)
 - [x] Implement immediate vs end-of-period cancellations (`team2/workflow` - Completed)
 - [x] Add automated test suite with `npm test` (`team2/workflow` - 23/23 Passed)
-- [ ] Complete customer, product, and plan management (Team 1)
+- [x] Complete foundation, auth, database, customer, product, and plan management (`team1/foundation` - Completed)
+- [x] Implement persistent relational database architecture and migration runner (`team1/foundation` - Completed)
+- [x] Implement PBKDF2 salted password hashing, session tokens, and RBAC authorization (`team1/foundation` - Completed)
+- [x] Implement customer lifecycle management with safe archival and search (`team1/foundation` - Completed)
+- [x] Implement product catalog and subscription plan pricing with versioning (`team1/foundation` - Completed)
+- [x] Add automated test suite with `npm run test:foundation` (`team1/foundation` - 18/18 Passed)
 - [ ] Build unified dashboard and customer portal integration (Team 4)
 - [ ] Final end-to-end integration test
 
@@ -278,10 +291,11 @@ Detailed documentation is available in the [`docs/`](docs/) directory:
 | Document | Purpose |
 | --- | --- |
 | [`docs/BILLING_ENGINE.md`](docs/BILLING_ENGINE.md) | Team 3: Billing architecture, models, GST tax rules, discounts, refunds, and reconciliation |
-| `docs/ARCHITECTURE.md` | Application structure and module relationships |
-| `docs/DATABASE.md` | Data models and entity relationships |
-| `docs/API.md` | API routes, payloads, and response conventions |
-| `docs/CONTRIBUTION.md` | Branching, reviews, and team workflow |
+| [docs/WORKFLOW_ENGINE.md](docs/WORKFLOW_ENGINE.md) | Team 2: Workflow architecture, state machines, proration, and renewal engine |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System overview, module boundaries, integration contracts, and security architecture |
+| [docs/DATABASE.md](docs/DATABASE.md) | Normalized relational models, schema design, constraints, and audit logging |
+| [docs/API.md](docs/API.md) | Standard REST API endpoints, auth headers, pagination, and error envelopes |
+| [docs/CONTRIBUTION.md](docs/CONTRIBUTION.md) | Branching matrix, commit standards, pull request protocol, and local testing |
 
 ---
 
