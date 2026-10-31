@@ -250,7 +250,11 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
   const res = await fetch(endpoint, { ...options, headers });
   if (!res.ok) {
     const errorBody = await res.json().catch(() => ({ error: res.statusText }));
-    throw new Error(errorBody.error || `Request failed with status ${res.status}`);
+    const errorMsg =
+      typeof errorBody.error === 'string'
+        ? errorBody.error
+        : errorBody.error?.message || errorBody.message || `Request failed with status ${res.status}`;
+    throw new Error(errorMsg);
   }
   return res.json();
 }

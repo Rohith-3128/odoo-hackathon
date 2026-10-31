@@ -41,6 +41,15 @@ export function foundationRoutes(
 
   // ─── Authentication & RBAC (`/api/auth`) ─────────────────────────────
 
+  router.get('/auth/users', (req: Request, res: Response) => {
+    try {
+      const users = db.query<any>('SELECT id, name, email, role, customer_id as customerId FROM users WHERE is_active = 1');
+      res.json(users);
+    } catch (err: any) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
   router.post('/auth/register', (req: Request, res: Response) => {
     try {
       const orgId = req.body.organizationId || req.user?.organizationId || 'org-ezbill-primary';
@@ -63,16 +72,23 @@ export function foundationRoutes(
   router.post('/auth/login', (req: Request, res: Response) => {
     try {
       const result = auth.login(req.body);
-      res.status(200).json({ success: true, data: result });
+      res.status(200).json({
+        success: true,
+        user: result.user,
+        token: result.token,
+        data: result,
+      });
     } catch (err: any) {
       const status = err.message.startsWith('VALIDATION_ERROR')
         ? 400
         : err.message.startsWith('AUTH_FORBIDDEN')
         ? 403
         : 401;
+      const msg = err.message.includes(': ') ? err.message.split(': ').slice(1).join(': ') : err.message;
       res.status(status).json({
         success: false,
-        error: { code: err.message.split(':')[0] || 'AUTH_ERROR', message: err.message },
+        error: msg,
+        details: { code: err.message.split(':')[0] || 'AUTH_ERROR', message: msg },
       });
     }
   });
@@ -102,6 +118,8 @@ export function foundationRoutes(
 
       res.status(200).json({
         success: true,
+        customers: result.data,
+        total: result.pagination.total,
         data: result.data,
         pagination: result.pagination,
       });
@@ -143,11 +161,41 @@ export function foundationRoutes(
         });
         return;
       }
-      res.status(200).json({ success: true, data: customer });
+      res.status(200).json({
+        success: true,
+        customer,
+        subscriptions: [],
+        quotations: [],
+        invoices: [],
+        payments: [],
+        data: customer,
+      });
     } catch (err: any) {
       res.status(500).json({
         success: false,
         error: { code: 'CUSTOMER_GET_ERROR', message: err.message },
+      });
+    }
+  });
+
+  router.put('/customers/:id', (req: Request, res: Response) => {
+    try {
+      const orgId = req.user?.organizationId || 'org-ezbill-primary';
+      const actor = req.user?.name || 'System';
+      const updated = customers.update(orgId, req.params.id, req.body, actor);
+      res.status(200).json({ success: true, data: updated, customer: updated });
+    } catch (err: any) {
+      const status = err.message.startsWith('NOT_FOUND')
+        ? 404
+        : err.message.startsWith('VALIDATION_ERROR')
+        ? 400
+        : err.message.startsWith('CONFLICT')
+        ? 409
+        : 500;
+      const msg = err.message.includes(': ') ? err.message.split(': ').slice(1).join(': ') : err.message;
+      res.status(status).json({
+        success: false,
+        error: msg,
       });
     }
   });
@@ -199,7 +247,11 @@ export function foundationRoutes(
       const orgId = req.user?.organizationId || 'org-ezbill-primary';
       const activeOnly = req.query.active === 'true';
       const products = catalog.listProducts(orgId, activeOnly);
-      res.status(200).json({ success: true, data: products });
+      if (req.headers['x-api-version'] || req.query.format === 'envelope') {
+        res.status(200).json({ success: true, data: products });
+      } else {
+        res.status(200).json(products);
+      }
     } catch (err: any) {
       res.status(500).json({
         success: false,
@@ -233,7 +285,11 @@ export function foundationRoutes(
         interval: interval as string,
         activeOnly: active === 'true',
       });
-      res.status(200).json({ success: true, data: plans });
+      if (req.headers['x-api-version'] || req.query.format === 'envelope') {
+        res.status(200).json({ success: true, data: plans });
+      } else {
+        res.status(200).json(plans);
+      }
     } catch (err: any) {
       res.status(500).json({
         success: false,
