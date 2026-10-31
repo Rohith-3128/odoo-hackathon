@@ -124,7 +124,8 @@ export default function App() {
       )}
 
       {/* Floating Instant Answers Chatbot at the bottom right corner */}
-      <Chatbot />
+      {/* AI Assistant symbol appears only after login */}
+      {currentView === 'nexus' && <Chatbot />}
     </>
   );
 }

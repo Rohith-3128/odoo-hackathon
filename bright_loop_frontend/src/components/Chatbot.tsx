@@ -6,13 +6,14 @@ import {
   Sparkles,
   Bot,
   RotateCcw,
-  ChevronDown,
-  HelpCircle,
-  CreditCard,
+  ChevronRight,
+  ChevronLeft,
+  Minimize2,
+  Zap,
   Repeat,
   Receipt,
+  CreditCard,
   ShieldCheck,
-  Zap,
 } from 'lucide-react';
 
 interface ChatMessage {
@@ -25,12 +26,13 @@ interface ChatMessage {
 
 export const Chatbot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true); // Hidden/tucked into edge by default to avoid interrupting text
   const [inputText, setInputText] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'welcome',
       sender: 'bot',
-      text: 'Hello! I am your EZbill Instant Assistant. I can give you quick, direct answers about plans, billing, invoices, upgrades, and account features without any delay.',
+      text: 'Hello! I am your EZbill Assistant. I can give you quick, direct answers about plans, billing, invoices, upgrades, and features without delay.',
       time: 'Just now',
       suggestions: [
         'What plans are available?',
@@ -44,6 +46,7 @@ export const Chatbot: React.FC = () => {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const hideTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -52,7 +55,29 @@ export const Chatbot: React.FC = () => {
     }
   }, [isOpen, messages]);
 
-  // Pre-compiled fast answers knowledge base
+  // When user is actively browsing or scrolling the dashboard, auto-tuck the floating button to the edge
+  useEffect(() => {
+    const handleUserActivity = () => {
+      if (!isOpen) {
+        // If the launcher is expanded, schedule it to tuck away so it doesn't block text
+        if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+        hideTimerRef.current = setTimeout(() => {
+          setIsCollapsed(true);
+        }, 3500);
+      }
+    };
+
+    window.addEventListener('scroll', handleUserActivity, { passive: true, capture: true });
+    window.addEventListener('wheel', handleUserActivity, { passive: true, capture: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleUserActivity, { capture: true });
+      window.removeEventListener('wheel', handleUserActivity, { capture: true });
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    };
+  }, [isOpen]);
+
+  // Fast pre-compiled knowledge base
   const getInstantAnswer = (query: string): string => {
     const q = query.toLowerCase().trim();
 
@@ -164,7 +189,6 @@ export const Chatbot: React.FC = () => {
     setMessages((prev) => [...prev, userMsg]);
     setInputText('');
 
-    // Instant answer without page scraping or delay
     setTimeout(() => {
       const answer = getInstantAnswer(query);
       const botMsg: ChatMessage = {
@@ -200,44 +224,53 @@ export const Chatbot: React.FC = () => {
       style={{
         position: 'fixed',
         bottom: '24px',
-        right: '24px',
+        right: isCollapsed && !isOpen ? '0px' : '24px',
         zIndex: 9999,
         fontFamily: 'var(--font-sans)',
+        transition: 'right 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+        pointerEvents: 'auto',
       }}
     >
-      {/* Floating Launcher Button */}
-      {!isOpen && (
+      {/* 1. Tucked Edge Tab (Minimal, non-intrusive handle that never interrupts text) */}
+      {!isOpen && isCollapsed && (
         <button
           type="button"
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            setIsCollapsed(false);
+            setIsOpen(true);
+          }}
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '10px',
-            padding: '12px 18px',
-            borderRadius: '9999px',
+            gap: '6px',
+            padding: '8px 12px 8px 10px',
             backgroundColor: '#0a0a0a',
             color: '#ffffff',
+            borderRadius: '16px 0 0 16px',
             border: '1px solid rgba(255, 255, 255, 0.15)',
-            boxShadow: '0 12px 28px rgba(0, 0, 0, 0.22), 0 2px 6px rgba(0, 0, 0, 0.1)',
+            borderRight: 'none',
+            boxShadow: '-3px 4px 14px rgba(0, 0, 0, 0.15)',
             cursor: 'pointer',
-            fontSize: '13.5px',
-            fontWeight: 500,
-            letterSpacing: '-0.01em',
-            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+            fontSize: '12px',
+            fontWeight: 600,
+            letterSpacing: '0.02em',
+            transition: 'all 0.2s ease',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
+            e.currentTarget.style.backgroundColor = '#18181b';
+            e.currentTarget.style.paddingLeft = '14px';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0) scale(1)';
+            e.currentTarget.style.backgroundColor = '#0a0a0a';
+            e.currentTarget.style.paddingLeft = '10px';
           }}
-          aria-label="Open Instant Answers Chatbot"
+          title="Open AI Assistant"
+          aria-label="Open AI Assistant"
         >
           <div
             style={{
-              width: '26px',
-              height: '26px',
+              width: '20px',
+              height: '20px',
               borderRadius: '50%',
               backgroundColor: '#10b981',
               display: 'flex',
@@ -246,22 +279,93 @@ export const Chatbot: React.FC = () => {
               color: '#ffffff',
             }}
           >
-            <Bot size={15} />
+            <Bot size={12} />
           </div>
-          <span>Instant Answers</span>
-          <span
-            style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              backgroundColor: '#10b981',
-              boxShadow: '0 0 8px #10b981',
-            }}
-          />
+          <span>AI</span>
+          <ChevronLeft size={13} color="rgba(255, 255, 255, 0.6)" />
         </button>
       )}
 
-      {/* Chat Window Popup */}
+      {/* 2. Expanded Floating Launcher Pill (with explicit Hide button) */}
+      {!isOpen && !isCollapsed && (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+            animation: 'fadeIn 0.2s ease-out',
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setIsOpen(true)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: '11px 16px',
+              borderRadius: '9999px',
+              backgroundColor: '#0a0a0a',
+              color: '#ffffff',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
+              boxShadow: '0 10px 24px rgba(0, 0, 0, 0.18)',
+              cursor: 'pointer',
+              fontSize: '13px',
+              fontWeight: 500,
+            }}
+          >
+            <div
+              style={{
+                width: '24px',
+                height: '24px',
+                borderRadius: '50%',
+                backgroundColor: '#10b981',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#ffffff',
+              }}
+            >
+              <Bot size={14} />
+            </div>
+            <span>Instant Answers</span>
+            <span
+              style={{
+                width: '7px',
+                height: '7px',
+                borderRadius: '50%',
+                backgroundColor: '#10b981',
+              }}
+            />
+          </button>
+
+          {/* Quick Hide Button to tuck into edge */}
+          <button
+            type="button"
+            onClick={() => setIsCollapsed(true)}
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              backgroundColor: '#ffffff',
+              border: '1px solid var(--border-soft)',
+              color: 'var(--muted)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.08)',
+              transition: 'all 0.15s ease',
+            }}
+            title="Hide to edge (don't block text)"
+            aria-label="Hide AI Assistant"
+          >
+            <ChevronRight size={15} />
+          </button>
+        </div>
+      )}
+
+      {/* 3. Full Chat Dialog Window */}
       {isOpen && (
         <div
           style={{
@@ -339,9 +443,13 @@ export const Chatbot: React.FC = () => {
                 <RotateCcw size={14} />
               </button>
 
+              {/* Hide & tuck to edge button */}
               <button
                 type="button"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  setIsCollapsed(true);
+                }}
                 style={{
                   background: 'none',
                   border: 'none',
@@ -353,7 +461,30 @@ export const Chatbot: React.FC = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
-                title="Minimize chat"
+                title="Hide AI symbol"
+                aria-label="Hide AI symbol"
+              >
+                <Minimize2 size={15} />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setIsOpen(false);
+                  setIsCollapsed(true);
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  cursor: 'pointer',
+                  padding: '6px',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                title="Close chat"
               >
                 <X size={16} />
               </button>
@@ -451,7 +582,6 @@ export const Chatbot: React.FC = () => {
                     {msg.text}
                   </div>
 
-                  {/* Suggestion buttons if attached */}
                   {msg.suggestions && msg.suggestions.length > 0 && (
                     <div
                       style={{
