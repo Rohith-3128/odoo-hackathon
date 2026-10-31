@@ -58,7 +58,7 @@ export class DatabaseManager {
     return (result as T) || null;
   }
 
-  public run(sql: string, params: any[] = []): { changes: number; lastInsertRowid: number | bigint } {
+  public run(sql: string, params: any[] = []): { changes: number | bigint; lastInsertRowid: number | bigint } {
     const stmt = this.db.prepare(sql);
     return stmt.run(...params);
   }

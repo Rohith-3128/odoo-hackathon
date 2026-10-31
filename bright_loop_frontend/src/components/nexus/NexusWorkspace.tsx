@@ -33,9 +33,8 @@ export const NexusWorkspace: React.FC<NexusWorkspaceProps> = ({
   initialTab = 'dashboard',
   authenticatedUser = null,
 }) => {
-  const [activeTab, setActiveTab] = useState(
-    authenticatedUser?.role === 'customer' ? 'portal' : initialTab
-  );
+  // Always default directly to the simple, unified dashboard upon signin or login
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(authenticatedUser);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -45,9 +44,6 @@ export const NexusWorkspace: React.FC<NexusWorkspaceProps> = ({
       setUsers(res);
       if (authenticatedUser) {
         setCurrentUser(authenticatedUser);
-        if (authenticatedUser.role === 'customer') {
-          setActiveTab('portal');
-        }
       } else if (!currentUser && res.length > 0) {
         setCurrentUser(res[0]); // default Julian Vance (Admin)
       }
@@ -55,7 +51,7 @@ export const NexusWorkspace: React.FC<NexusWorkspaceProps> = ({
   }, [authenticatedUser]);
 
   const navItems = [
-    { id: 'dashboard', label: 'Overview', icon: LayoutDashboard, roles: ['admin', 'finance', 'sales'] },
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['admin', 'finance', 'sales', 'customer'] },
     { id: 'customers', label: 'Customers', icon: Users, roles: ['admin', 'sales', 'finance'] },
     { id: 'products', label: 'Products & Plans', icon: Layers, roles: ['admin', 'sales'] },
     { id: 'quotations', label: 'Quotations', icon: FileSpreadsheet, roles: ['admin', 'sales'] },
@@ -129,7 +125,7 @@ export const NexusWorkspace: React.FC<NexusWorkspaceProps> = ({
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              title="Return to Agency Hero"
+              title="Return to Landing Page"
             >
               <ArrowLeft size={14} />
             </button>
@@ -204,14 +200,14 @@ export const NexusWorkspace: React.FC<NexusWorkspaceProps> = ({
                   flexShrink: 0,
                 }}
               >
-                {currentUser?.name.charAt(0)}
+                {currentUser?.name ? currentUser.name.charAt(0) : 'U'}
               </div>
               <div style={{ overflow: 'hidden' }}>
                 <div style={{ fontSize: '13px', fontWeight: 600, whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
-                  {currentUser?.name}
+                  {currentUser?.name || 'Active User'}
                 </div>
                 <div style={{ fontSize: '11px', color: 'var(--muted)', textTransform: 'capitalize' }}>
-                  {currentUser?.role}
+                  {currentUser?.role || 'Guest'}
                 </div>
               </div>
             </div>
@@ -243,11 +239,6 @@ export const NexusWorkspace: React.FC<NexusWorkspaceProps> = ({
                   onClick={() => {
                     setCurrentUser(u);
                     setIsUserMenuOpen(false);
-                    if (u.role === 'customer') {
-                      setActiveTab('portal');
-                    } else if (activeTab === 'portal') {
-                      setActiveTab('dashboard');
-                    }
                   }}
                   style={{
                     width: '100%',
@@ -304,7 +295,12 @@ export const NexusWorkspace: React.FC<NexusWorkspaceProps> = ({
 
       {/* Main Content Area */}
       <main style={{ flex: 1, padding: '36px 48px', maxWidth: '1300px', width: '100%', overflowX: 'hidden' }}>
-        {activeTab === 'dashboard' && <DashboardView onNavigate={(tab) => setActiveTab(tab)} />}
+        {activeTab === 'dashboard' && (
+          <DashboardView
+            onNavigate={(tab) => setActiveTab(tab)}
+            currentUser={currentUser}
+          />
+        )}
         {activeTab === 'customers' && <CustomersView />}
         {activeTab === 'products' && <ProductsPlansView />}
         {activeTab === 'quotations' && <QuotationsView />}
