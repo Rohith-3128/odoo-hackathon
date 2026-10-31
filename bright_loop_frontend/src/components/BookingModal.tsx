@@ -124,7 +124,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
                   <span className="green-dot" />
                   <span style={{ fontSize: '13px', color: 'var(--muted)' }}>
-                    Brightloop Nexus Leadership · 15 min intro video call
+                    EZbill Leadership · 15 min intro video call
                   </span>
                 </div>
               </div>

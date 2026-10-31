@@ -146,7 +146,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
               marginBottom: '6px',
             }}
           >
-            Brightloop Nexus<sup style={{ fontStyle: 'normal', fontSize: '11px', marginLeft: '2px' }}>®</sup>
+            EZbill<sup style={{ fontStyle: 'normal', fontSize: '11px', marginLeft: '2px' }}>®</sup>
           </div>
           <h2
             style={{
@@ -157,7 +157,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
               color: 'var(--text)',
             }}
           >
-            Log in to Nexus OS
+            Log in to EZbill Workspace
           </h2>
           <p
             style={{
