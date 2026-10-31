@@ -1,5 +1,5 @@
 /**
- * Brightloop Nexus - Pricing, Plans, and Booking logic
+ * EZbill - Pricing, Plans, and Booking logic
  */
 
 export interface AgencyPlan {

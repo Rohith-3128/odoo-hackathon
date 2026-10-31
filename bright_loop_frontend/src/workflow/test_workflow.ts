@@ -1,5 +1,5 @@
 /**
- * Brightloop Nexus - Workflow Test Suite
+ * EZbill - Workflow Test Suite
  * Team 2: Workflows & Subscription Lifecycle
  *
  * Automated tests covering quotation calculations, state transitions,

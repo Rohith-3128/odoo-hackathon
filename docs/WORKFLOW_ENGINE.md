@@ -1,4 +1,4 @@
-# Brightloop Nexus — Quotation & Subscription Lifecycle Workflow Module
+# EZbill — Quotation & Subscription Lifecycle Workflow Module
 **Team 2: Workflow & Subscription Lifecycle Engine Documentation**
 
 ---

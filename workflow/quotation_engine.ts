@@ -1,5 +1,5 @@
 /**
- * Brightloop Nexus - Quotation Management Engine
+ * EZbill - Quotation Management Engine
  * Team 2: Workflows & Subscription Lifecycle
  *
  * Authoritative business logic for creating, calculating, validating,

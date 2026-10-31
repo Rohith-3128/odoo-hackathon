@@ -1,5 +1,5 @@
 /**
- * Brightloop Nexus - Subscription Lifecycle Engine
+ * EZbill - Subscription Lifecycle Engine
  * Team 2: Workflows & Subscription Lifecycle
  *
  * Authoritative business logic for subscription state machine,

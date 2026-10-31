@@ -1,5 +1,5 @@
 /**
- * Brightloop Nexus - Financial metrics calculation engine
+ * EZbill - Financial metrics calculation engine
  */
 
 export interface SubRecord {
