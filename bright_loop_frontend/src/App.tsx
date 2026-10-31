@@ -47,8 +47,9 @@ export default function App() {
 
   return (
     <main style={{ minHeight: '100vh', width: '100%', position: 'relative' }}>
-      {/* Fixed Navbar with Brand Logo and Login button */}
+      {/* Fixed Navbar with Brand Logo, Sign In, and Login buttons */}
       <Navbar
+        onOpenSignIn={() => setIsLoginOpen(true)}
         onOpenLogin={() => setIsLoginOpen(true)}
         onLogoClick={() => {
           setIsPlansOpen(false);

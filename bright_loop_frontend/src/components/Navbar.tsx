@@ -1,15 +1,19 @@
 import React from 'react';
-import { LogIn } from 'lucide-react';
+import { LogIn, User } from 'lucide-react';
 
 interface NavbarProps {
   onOpenLogin: () => void;
+  onOpenSignIn?: () => void;
   onLogoClick: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   onOpenLogin,
+  onOpenSignIn,
   onLogoClick,
 }) => {
+  const handleSignIn = onOpenSignIn || onOpenLogin;
+
   return (
     <header className="navbar-fixed">
       <nav className="navbar-container" aria-label="Main Navigation">
@@ -22,7 +26,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           EZbill<sup className="logo-trademark">®</sup>
         </button>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <button
+            type="button"
+            className="navbar-signin-btn"
+            onClick={handleSignIn}
+            aria-label="Sign in to EZbill"
+          >
+            <User size={15} />
+            <span>Sign in</span>
+          </button>
+
           <button
             type="button"
             className="navbar-login-btn"
