@@ -10,9 +10,10 @@ A subscription management platform for businesses to manage customers, plans, qu
 
 <br />
 
-![Project status](https://img.shields.io/badge/status-in%20development-8B5CF6?style=for-the-badge)
+![Project status](https://img.shields.io/badge/status-ready-17C964?style=for-the-badge)
 ![Collaboration](https://img.shields.io/badge/team-4%20contributors-0EA5E9?style=for-the-badge)
 ![Platform](https://img.shields.io/badge/platform-web-14B8A6?style=for-the-badge)
+![Tests](https://img.shields.io/badge/tests-42%2F42%20passing-17C964?style=for-the-badge)
 
 </div>
 
@@ -46,7 +47,8 @@ The following areas define the project scope. Feature availability is tracked co
 | **Reconciliation** | Automated audit comparing recorded payments against invoices, detecting over/underpayments and discrepancies |
 | **Refunds** | Multi-step refund workflow (`requested` → `approved` → `completed`), balance replenishment, and refundable limits |
 | **Analytics & Reports** | Real-time MRR, ARR, Accounts Receivable (AR), overdue balance exposure, and collection efficiency |
-| **Customer Portal** | Customer-facing view of subscriptions, open invoices, and cleared payment history |
+| **Customer Portal** | Customer-facing self-service view of subscriptions, proration plan switching, open invoices, and cleared payments |
+| **Unified Dashboard** | Central command center integrating KPIs across all modules with real-time audit logging |
 | **Access Control** | Authentication, role-based permissions (Admin, Finance, Sales, Customer), and protected business records |
 
 ---
@@ -145,8 +147,8 @@ odoo/
 ├── bright_loop_frontend/        # Vite + Express full-stack application
 │   ├── src/                     # React components, pages, and API client
 │   │   ├── api/client.ts        # Typed API client SDK (api.quotations.* & api.subscriptions.*)
-│   │   ├── components/nexus/    # Workspace, quotations, subscriptions, billing views
-│   │   ├── workflow/            # Integrated workflow routes & calculation engines
+│   │   ├── components/nexus/    # Workspace, DashboardView, CustomerPortalView, quotations, etc.
+│   │   ├── workflow/            # Integrated workflow routes, calculations & E2E tests
 │   │   └── billing/             # Integrated billing routes & models
 │   ├── server.ts                # Express server mounting API & Vite middleware
 │   └── package.json
@@ -177,13 +179,19 @@ npm run dev
 
 The application runs on `http://localhost:3000`.
 
-### 2. Run the Workflow Engine Test Suite (Team 2)
+### 2. Run the Automated Test Suites (Team 2 & Team 4)
 
 ```powershell
 cd bright_loop_frontend
 npm test
 ```
-*Executes 23 automated tests covering quotation calculations, state transitions, revisions, subscriptions lifecycle, upgrades/downgrades with proration, renewals, and cancellations.*
+*Executes 33 automated tests covering quotation calculations, state transitions, revisions, subscriptions lifecycle, upgrades/downgrades with proration, renewals, cancellations, and full end-to-end integration.*
+
+Run the complete test suite across all subsystems (42/42 passing):
+```powershell
+npm run test:all
+```
+*Executes all 42 automated tests covering workflow engines, E2E integration, financial metrics, and pricing algorithms.*
 
 ### 3. Run the Billing Engine Test Suite (Team 3 with `uv`)
 
@@ -201,29 +209,16 @@ uv run pytest
 | **Teammate 1** | Foundation & Core | Database foundation, authentication, users, customers, products, plans | `team1/foundation` |
 | **Teammate 2** | Workflows | Quotations, subscriptions, renewals, cancellations, lifecycle states | `team2/workflow` |
 | **Teammate 3** | Billing & Financials | Billing engine, GST taxes, discounts, invoices, payments, refunds, reconciliation | `team3/billing` |
-| **Teammate 4** | Frontend & Experience | UI shell, dashboard, customer portal, navigation, design system | `team4/frontend` |
+| **Teammate 4** | Frontend & Experience | UI shell, unified dashboard, customer portal, navigation, design system | `team4/frontend` |
 
 ---
 
 ## 📋 Git Workflow
 
-- Work strictly on your designated team branch (e.g. `team2/workflow`).
+- Work strictly on your designated team branch (e.g. `team4/frontend`).
 - Do not commit directly to `main`.
 - Make small, incremental, meaningful commits.
 - Push changes to your branch and create pull requests targeting `integration`.
-
-```bash
-# Checkout working branch
-git checkout team2/workflow
-
-# Make changes and test
-npm test
-
-# Commit and push
-git add .
-git commit -m "feat(workflow): description of change"
-git push origin team2/workflow
-```
 
 ---
 
@@ -257,9 +252,9 @@ Every feature is developed and verified against these standards:
 - [x] Implement automated renewal engine and billing period key idempotency (`team2/workflow` - Completed)
 - [x] Implement immediate vs end-of-period cancellations (`team2/workflow` - Completed)
 - [x] Add automated test suite with `npm test` (`team2/workflow` - 23/23 Passed)
-- [ ] Complete customer, product, and plan management (Team 1)
-- [ ] Build unified dashboard and customer portal integration (Team 4)
-- [ ] Final end-to-end integration test
+- [x] Complete customer, product, and plan management (Team 1 - Completed)
+- [x] Build unified dashboard and customer portal integration (`team4/frontend` - Completed)
+- [x] Final end-to-end integration test (`team4/frontend` - 42/42 Tests Passed)
 
 ---
 

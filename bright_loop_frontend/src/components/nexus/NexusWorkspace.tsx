@@ -304,7 +304,7 @@ export const NexusWorkspace: React.FC<NexusWorkspaceProps> = ({
 
       {/* Main Content Area */}
       <main style={{ flex: 1, padding: '36px 48px', maxWidth: '1300px', width: '100%', overflowX: 'hidden' }}>
-        {activeTab === 'dashboard' && <DashboardView />}
+        {activeTab === 'dashboard' && <DashboardView onNavigate={(tab) => setActiveTab(tab)} />}
         {activeTab === 'customers' && <CustomersView />}
         {activeTab === 'products' && <ProductsPlansView />}
         {activeTab === 'quotations' && <QuotationsView />}
@@ -312,7 +312,10 @@ export const NexusWorkspace: React.FC<NexusWorkspaceProps> = ({
         {activeTab === 'billing' && <BillingView />}
         {activeTab === 'reports' && <FinancialReportsView />}
         {activeTab === 'portal' && (
-          <CustomerPortalView currentCustomerId={currentUser?.customerId || 'cust-1'} />
+          <CustomerPortalView
+            currentCustomerId={currentUser?.customerId || 'cust-1'}
+            userRole={currentUser?.role || 'admin'}
+          />
         )}
       </main>
     </div>

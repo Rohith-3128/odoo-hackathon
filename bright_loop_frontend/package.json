@@ -10,7 +10,10 @@
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit",
-    "test": "tsx --test src/workflow/test_workflow.ts"
+    "test": "tsx --test src/workflow/test_workflow.ts src/workflow/test_e2e_integration.ts",
+    "test:workflow": "tsx --test src/workflow/test_workflow.ts",
+    "test:e2e": "tsx --test src/workflow/test_e2e_integration.ts",
+    "test:all": "tsx --test src/workflow/test_workflow.ts src/workflow/test_e2e_integration.ts src/utils/metrics.test.ts src/utils/pricing.test.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
