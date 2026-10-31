@@ -305,9 +305,7 @@ Contributions are built collaboratively. Coordinate before changing shared datab
 
 ---
 
-## 📄 License
-
-This project is licensed under the terms agreed upon by Team EZbill.
+am EZbill.
 
 ---
 
