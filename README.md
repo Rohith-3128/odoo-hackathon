@@ -13,7 +13,7 @@ A subscription management platform for businesses to manage customers, plans, qu
 ![Project status](https://img.shields.io/badge/status-ready-17C964?style=for-the-badge)
 ![Collaboration](https://img.shields.io/badge/team-4%20contributors-0EA5E9?style=for-the-badge)
 ![Platform](https://img.shields.io/badge/platform-web-14B8A6?style=for-the-badge)
-![Tests](https://img.shields.io/badge/tests-42%2F42%20passing-17C964?style=for-the-badge)
+![Tests](https://img.shields.io/badge/tests-60%2B%20passing-17C964?style=for-the-badge)
 
 </div>
 
@@ -99,74 +99,49 @@ flowchart TB
 ### Core Workflow
 
 ```mermaid
-flowchart LR
-    A[Customer] --> B[Quotation]
-    B --> C[Subscription]
-    C --> D[Billing Event]
-    D --> E[Invoice]
-    E --> F[Payment]
-    F --> G[Reconciliation]
-    G --> H[Financial Reports]
+sequenceDiagram
+    autonumber
+    actor Customer
+    actor Sales
+    actor Finance
+    participant Portal as Customer Portal
+    participant API as EZbill API
+    participant Engine as Workflow & Billing Engine
+    participant DB as Database
+
+    Sales->>API: Draft Quotation (Plans, Add-ons, Discounts)
+    API->>DB: Store Quotation (Status: Draft)
+    Sales->>API: Send Quotation to Customer
+    API-->>Portal: Expose Quotation in Customer Portal
+    Customer->>Portal: Review & Accept Quotation
+    Portal->>API: Transition Quotation (Accepted)
+    API->>Engine: Convert Quotation to Active Subscription
+    Engine->>DB: Create Subscription & Generate Initial Invoice
+    Customer->>Portal: Settle Invoice via Multi-rail Payment (Card / ACH / Wire)
+    Portal->>API: Submit Payment
+    API->>Engine: Process Payment & Settle Invoice Balance
+    Engine->>DB: Update Invoice (Status: Paid) & Record Bank Receipt
+    Finance->>API: Inspect Real-Time Dashboard (MRR, ARR, Collections)
 ```
 
 ---
 
-## 🧰 Technology Stack
+## 💻 Tech Stack
 
-- **Frontend Application:** React 19, TypeScript, Tailwind CSS, Vite, Lucide Icons
-- **Web Server & Backend API:** Node.js, Express, TypeScript (`tsx`)
-- **Billing & Financial Engine:** Python 3.12, `uv` package manager, Pydantic, Pytest (`Decimal` monetary precision)
-- **Database & Data Store:** Relational persistent models with in-memory authoritative engine and API synchronization
-
----
-
-## 📁 Repository Layout
-
-```text
-odoo/
-├── billing/                     # TypeScript billing engine & route definitions
-│   ├── billing_engine.ts        # Central invoice calculations & period keys
-│   ├── billing_routes.ts        # Express endpoints for billing operations
-│   ├── discount_manager.ts      # Discount validation & cap enforcement
-│   └── tax_config.ts            # Indian GST (CGST/SGST/IGST) calculations
-├── workflow/                    # TypeScript quotation & subscription lifecycle engine
-│   ├── quotation_engine.ts      # Line item calculations, discounts, taxes & quote state machine
-│   ├── subscription_engine.ts   # Subscription lifecycle, proration math & renewal key generator
-│   ├── workflow_routes.ts       # Express endpoints for quotations and subscriptions
-│   └── test_workflow.ts         # Automated test suite (23/23 tests passing)
-├── billing_engine/              # Python billing engine package (managed with uv)
-│   ├── pyproject.toml           # uv project configuration
-│   ├── src/billing_engine/      # Core Python financial modules
-│   │   ├── engine.py            # Authoritative invoice generation
-│   │   ├── models.py            # Pydantic models for billing entities
-│   │   ├── payments.py          # Payments, refunds, and reconciliation
-│   │   ├── reports.py           # Financial metrics (MRR, ARR, AR)
-│   │   └── tax.py               # Decimal-based GST tax logic
-│   └── tests/                   # Automated pytest suite (10/10 tests passing)
-│       └── test_billing.py
-├── bright_loop_frontend/        # Vite + Express full-stack application
-│   ├── src/                     # React components, pages, and API client
-│   │   ├── api/client.ts        # Typed API client SDK (api.quotations.* & api.subscriptions.*)
-│   │   ├── components/nexus/    # Workspace, DashboardView, CustomerPortalView, quotations, etc.
-│   │   ├── workflow/            # Integrated workflow routes, calculations & E2E tests
-│   │   └── billing/             # Integrated billing routes & models
-│   ├── server.ts                # Express server mounting API & Vite middleware
-│   └── package.json
-├── docs/                        # Project documentation
-│   ├── BILLING_ENGINE.md        # Complete Team 3 billing specifications
-│   └── WORKFLOW_ENGINE.md       # Complete Team 2 quotation & subscription lifecycle specifications
-├── README.md                    # Project overview and coordination guide
-└── .gitignore                   # Ignores .venv, node_modules, and cache files
-```
+- **Frontend & Web Shell:** React 19, TypeScript, Vite, Tailwind CSS, Lucide Icons, Motion
+- **Application Server:** Node.js, Express, tsx
+- **Data & Storage:** Persistent SQLite Engine & JSON Storage with ACID transactions
+- **Billing Engine Backend:** Python, Decimal arithmetic, Pytest (via `uv`)
+- **Testing:** Node Native Test Runner, Pytest, End-to-End Integration Test Suite
 
 ---
 
-## ⚡ Getting Started
+## 🏁 Getting Started
 
 ### Prerequisites
 
-- **Node.js** (v18+)
-- **Python** (v3.12+)
+- **Node.js** (v18+ recommended)
+- **Python** (v3.10+ recommended)
 - **uv** package manager (`pip install uv` or via standalone installer)
 
 ### 1. Run the Frontend & Express API Server
@@ -179,7 +154,15 @@ npm run dev
 
 The application runs on `http://localhost:3000`.
 
-### 2. Run the Automated Test Suites (Team 2 & Team 4)
+### 2. Run the Foundation Test Suite (Team 1)
+
+```powershell
+cd bright_loop_frontend
+npm run test:foundation
+```
+*Executes 18 automated tests covering relational migrations, ACID transactions, PBKDF2 cryptography, session tokens, RBAC permissions, customer management, plan versioning, and multi-tenancy.*
+
+### 3. Run the Workflow Engine Test Suite (Team 2 & Team 4)
 
 ```powershell
 cd bright_loop_frontend
@@ -187,13 +170,13 @@ npm test
 ```
 *Executes 33 automated tests covering quotation calculations, state transitions, revisions, subscriptions lifecycle, upgrades/downgrades with proration, renewals, cancellations, and full end-to-end integration.*
 
-Run the complete test suite across all subsystems (42/42 passing):
+Run the complete test suite across all subsystems:
 ```powershell
 npm run test:all
 ```
-*Executes all 42 automated tests covering workflow engines, E2E integration, financial metrics, and pricing algorithms.*
+*Executes all automated tests covering foundation, workflow engines, E2E integration, financial metrics, and pricing algorithms.*
 
-### 3. Run the Billing Engine Test Suite (Team 3 with `uv`)
+### 4. Run the Billing Engine Test Suite (Team 3 with `uv`)
 
 ```powershell
 cd billing_engine
@@ -237,13 +220,12 @@ Every feature is developed and verified against these standards:
 ## 🗺️ Roadmap
 
 - [x] Confirm and document the application stack
-- [x] Implement invoice generation and recurring billing (`team3/billing` - Completed)
-- [x] Implement GST tax calculation engine (`team3/billing` - Completed)
-- [x] Implement discount validation and cap rules (`team3/billing` - Completed)
-- [x] Implement payment tracking, partial settlement, and simulation (`team3/billing` - Completed)
-- [x] Implement refund lifecycle and balance enforcement (`team3/billing` - Completed)
-- [x] Implement payment reconciliation audit (`team3/billing` - Completed)
-- [x] Add automated test suite with `uv run pytest` (`team3/billing` - 10/10 Passed)
+- [x] Complete foundation, auth, database, customer, product, and plan management (`team1/foundation` - Completed)
+- [x] Implement persistent relational database architecture and migration runner (`team1/foundation` - Completed)
+- [x] Implement PBKDF2 salted password hashing, session tokens, and RBAC authorization (`team1/foundation` - Completed)
+- [x] Implement customer lifecycle management with safe archival and search (`team1/foundation` - Completed)
+- [x] Implement product catalog and subscription plan pricing with versioning (`team1/foundation` - Completed)
+- [x] Add automated test suite with `npm run test:foundation` (`team1/foundation` - 18/18 Passed)
 - [x] Complete quotation and subscription workflows (`team2/workflow` - Completed)
 - [x] Implement quotation creation, line item calculations, and revision tracking (`team2/workflow` - Completed)
 - [x] Implement safe idempotent quotation-to-subscription conversion (`team2/workflow` - Completed)
@@ -252,7 +234,13 @@ Every feature is developed and verified against these standards:
 - [x] Implement automated renewal engine and billing period key idempotency (`team2/workflow` - Completed)
 - [x] Implement immediate vs end-of-period cancellations (`team2/workflow` - Completed)
 - [x] Add automated test suite with `npm test` (`team2/workflow` - 23/23 Passed)
-- [x] Complete customer, product, and plan management (Team 1 - Completed)
+- [x] Implement invoice generation and recurring billing (`team3/billing` - Completed)
+- [x] Implement GST tax calculation engine (`team3/billing` - Completed)
+- [x] Implement discount validation and cap rules (`team3/billing` - Completed)
+- [x] Implement payment tracking, partial settlement, and simulation (`team3/billing` - Completed)
+- [x] Implement refund lifecycle and balance enforcement (`team3/billing` - Completed)
+- [x] Implement payment reconciliation audit (`team3/billing` - Completed)
+- [x] Add automated test suite with `uv run pytest` (`team3/billing` - 10/10 Passed)
 - [x] Build unified dashboard and customer portal integration (`team4/frontend` - Completed)
 - [x] Final end-to-end integration test (`team4/frontend` - 42/42 Tests Passed)
 
@@ -266,36 +254,9 @@ Every feature is developed and verified against these standards:
 
 ---
 
-## 📚 Documentation
+## 📄 Documentation
 
-Detailed documentation is available in the [`docs/`](docs/) directory:
-
-| Document | Purpose |
-| --- | --- |
-| [`docs/BILLING_ENGINE.md`](docs/BILLING_ENGINE.md) | Team 3: Billing architecture, models, GST tax rules, discounts, refunds, and reconciliation |
-| [docs/WORKFLOW_ENGINE.md](docs/WORKFLOW_ENGINE.md) | Team 2: Workflow architecture, state machines, proration, and renewal engine |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System overview, module boundaries, integration contracts, and security architecture |
-| [docs/DATABASE.md](docs/DATABASE.md) | Normalized relational models, schema design, constraints, and audit logging |
-| [docs/API.md](docs/API.md) | Standard REST API endpoints, auth headers, pagination, and error envelopes |
-| [docs/CONTRIBUTION.md](docs/CONTRIBUTION.md) | Branching matrix, commit standards, pull request protocol, and local testing |
-
----
-
-## 🤝 Contributing
-
-Contributions are built collaboratively. Coordinate before changing shared database schemas, API contracts, or global frontend components.
-
----
-
-## 📄 License
-
-This project is licensed under the terms agreed upon by Team EZbill.
-
----
-
-<div align="center">
-
-**Built collaboratively by Team EZbill.**  
-*Turning subscription complexity into operational clarity.*
-
-</div>
+- [Architecture Guide](docs/ARCHITECTURE.md)
+- [Database Models & Schema](docs/DATABASE.md)
+- [API Reference](docs/API.md)
+- [Contribution Guidelines](docs/CONTRIBUTION.md)
