@@ -1,5 +1,5 @@
 """
-Brightloop Nexus Billing Engine Package
+EZbill Billing Engine Package
 Teammate 3: Billing & Financial Engine
 """
 

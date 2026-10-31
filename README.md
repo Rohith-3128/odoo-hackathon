@@ -1,6 +1,6 @@
 <div align="center">
 
-# BRIGHTLOOP NEXUS
+# EZBILL
 
 ### One workspace. Every subscription. Complete financial clarity.
 
@@ -20,11 +20,11 @@ A subscription management platform for businesses to manage customers, plans, qu
 
 ## ✨ Overview
 
-**Brightloop Nexus** brings the complete subscription lifecycle into a single, connected workspace.
+**EZbill** brings the complete subscription lifecycle into a single, connected workspace.
 
 From the first customer quotation to subscription activation, recurring invoices, payment tracking, and revenue reporting, the platform is designed to help teams manage the commercial and financial side of subscription businesses with greater visibility and control.
 
-Instead of disconnected spreadsheets and isolated tools, Brightloop Nexus provides a shared source of truth for customer, subscription, and billing information.
+Instead of disconnected spreadsheets and isolated tools, EZbill provides a shared source of truth for customer, subscription, and billing information.
 
 > **Our goal:** Make subscription operations easier to understand, easier to manage, and more reliable as a business grows.
 
@@ -51,11 +51,11 @@ The following areas define the project scope. Feature availability is tracked co
 
 ---
 
-## 🧭 Why Brightloop Nexus?
+## 🧭 Why EZbill?
 
 Subscription operations involve more than collecting a recurring payment. Teams need to understand who the customer is, what they purchased, when the next renewal is due, which invoices remain unpaid, and how each financial event affects the business.
 
-Brightloop Nexus is built around four principles:
+EZbill is built around four principles:
 
 1. **Connected Workflows:** Customer, quotation, subscription, and billing records relate directly to one another.
 2. **Reliable Financial Data:** Monetary calculations happen on the backend using high-precision Decimal and minor-unit representations, preserving transaction history.
@@ -66,7 +66,7 @@ Brightloop Nexus is built around four principles:
 
 ## 🏗️ Architecture
 
-Brightloop Nexus is organised into cooperating modules:
+EZbill is organised into cooperating modules:
 
 ```mermaid
 flowchart TB
@@ -271,13 +271,13 @@ Contributions are built collaboratively. Coordinate before changing shared datab
 
 ## 📄 License
 
-This project is licensed under the terms agreed upon by Team Brightloop.
+This project is licensed under the terms agreed upon by Team EZbill.
 
 ---
 
 <div align="center">
 
-**Built collaboratively by Team Brightloop.**  
+**Built collaboratively by Team EZbill.**  
 *Turning subscription complexity into operational clarity.*
 
 </div>

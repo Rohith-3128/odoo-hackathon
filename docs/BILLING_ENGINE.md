@@ -1,4 +1,4 @@
-# Brightloop Nexus — Billing & Financial Management Module
+# EZbill — Billing & Financial Management Module
 **Team 3: Billing & Financial Engine Documentation**
 
 ---

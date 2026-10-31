@@ -1,5 +1,5 @@
 """
-Brightloop Nexus - Tax Engine
+EZbill - Tax Engine
 Team 3: Billing & Financial Engine
 
 Configurable tax rules: CGST, SGST, IGST.

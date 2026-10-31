@@ -1,5 +1,5 @@
 """
-Brightloop Nexus - Financial Data Models
+EZbill - Financial Data Models
 Team 3: Billing & Financial Engine
 """
 

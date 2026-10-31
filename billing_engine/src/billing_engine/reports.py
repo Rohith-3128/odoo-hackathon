@@ -1,5 +1,5 @@
 """
-Brightloop Nexus - Financial Reporting & Analytics
+EZbill - Financial Reporting & Analytics
 Team 3: Billing & Financial Engine
 """
 

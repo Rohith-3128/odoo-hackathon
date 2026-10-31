@@ -1,5 +1,5 @@
 """
-Brightloop Nexus - Discount Manager
+EZbill - Discount Manager
 Team 3: Billing & Financial Engine
 
 Validates percentage and fixed discounts, caps, dates, limits, and eligibility.
