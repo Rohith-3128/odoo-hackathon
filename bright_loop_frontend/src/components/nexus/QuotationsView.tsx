@@ -102,7 +102,7 @@ export const QuotationsView: React.FC = () => {
       <PageHeader
         title="Sales Quotations & Proposals"
         description="Formal enterprise proposals with state transitions from draft to converted recurring subscriptions."
-        breadcrumbs={['Brightloop Nexus', 'Quotations']}
+        breadcrumbs={['EZbill', 'Quotations']}
         action={
           <button
             type="button"

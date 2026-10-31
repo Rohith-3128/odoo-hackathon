@@ -58,7 +58,7 @@ export const ProductsPlansView: React.FC = () => {
       <PageHeader
         title="Products & Subscription Plans"
         description="Authoritative product catalog defining pricing intervals, entitlements, and features."
-        breadcrumbs={['Brightloop Nexus', 'Products & Plans']}
+        breadcrumbs={['EZbill', 'Products & Plans']}
         action={
           <button
             type="button"

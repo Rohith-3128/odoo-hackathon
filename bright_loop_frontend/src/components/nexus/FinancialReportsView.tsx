@@ -51,7 +51,7 @@ export const FinancialReportsView: React.FC = () => {
       <PageHeader
         title="Financial & Audit Reports"
         description="Comprehensive recurring revenue reconciliation and accounting statements."
-        breadcrumbs={['Brightloop Nexus', 'Financial Reports']}
+        breadcrumbs={['EZbill', 'Financial Reports']}
         action={
           <button
             type="button"

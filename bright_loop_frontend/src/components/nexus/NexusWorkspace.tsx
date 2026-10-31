@@ -108,7 +108,7 @@ export const NexusWorkspace: React.FC<NexusWorkspaceProps> = ({
                   letterSpacing: '-0.06em',
                 }}
               >
-                Brightloop Nexus<sup style={{ fontStyle: 'normal', fontSize: '10px', marginLeft: '2px' }}>®</sup>
+                EZbill<sup style={{ fontStyle: 'normal', fontSize: '10px', marginLeft: '2px' }}>®</sup>
               </div>
               <div style={{ fontSize: '11px', color: 'var(--muted)', marginTop: '2px' }}>
                 Subscription Operating System

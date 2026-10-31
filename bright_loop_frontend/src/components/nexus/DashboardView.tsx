@@ -53,7 +53,7 @@ export const DashboardView: React.FC = () => {
       <PageHeader
         title="Revenue & Subscription Intelligence"
         description="Authoritative real-time recurring metrics derived strictly from backend database records."
-        breadcrumbs={['Brightloop Nexus', 'Overview']}
+        breadcrumbs={['EZbill', 'Overview']}
         action={
           <div style={{ display: 'flex', gap: '8px' }}>
             <div

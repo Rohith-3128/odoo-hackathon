@@ -115,7 +115,7 @@ export const SubscriptionsView: React.FC = () => {
       <PageHeader
         title="Subscription Engine"
         description="Manage recurring subscription lifecycles, plan upgrades, auto-renewals, and pause/cancel states."
-        breadcrumbs={['Brightloop Nexus', 'Subscriptions']}
+        breadcrumbs={['EZbill', 'Subscriptions']}
         action={
           <button
             type="button"

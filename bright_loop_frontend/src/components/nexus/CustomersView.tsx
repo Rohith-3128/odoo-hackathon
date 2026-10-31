@@ -80,7 +80,7 @@ export const CustomersView: React.FC = () => {
       <PageHeader
         title="Customer Directory"
         description="Comprehensive customer profiles with linked contracts, subscriptions, and billing histories."
-        breadcrumbs={['Brightloop Nexus', 'Customers']}
+        breadcrumbs={['EZbill', 'Customers']}
         action={
           <button
             type="button"
@@ -343,7 +343,7 @@ export const CustomersView: React.FC = () => {
 
             <h2 style={{ fontSize: '24px', fontWeight: 600, marginBottom: '6px' }}>Add New Customer</h2>
             <p style={{ color: 'var(--muted)', fontSize: '13px', marginBottom: '20px' }}>
-              Create an enterprise customer account profile on Brightloop Nexus.
+              Create an enterprise customer account profile on EZbill.
             </p>
 
             <form onSubmit={handleCreateCustomer} className="booking-form">
