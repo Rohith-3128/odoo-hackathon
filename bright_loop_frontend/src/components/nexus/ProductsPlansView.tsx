@@ -114,7 +114,7 @@ export const ProductsPlansView: React.FC = () => {
             </div>
 
             <div style={{ borderTop: '1px solid var(--border-soft)', paddingTop: '16px', fontSize: '12px', color: 'var(--muted)' }}>
-              Product: Nexus Core Platform · System ID: {p.id}
+              Product: EZbill Core Billing Platform · System ID: {p.id}
             </div>
           </div>
         ))}

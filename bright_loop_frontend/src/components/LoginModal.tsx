@@ -311,7 +311,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                 required
                 value={selectedEmail}
                 onChange={(e) => setSelectedEmail(e.target.value)}
-                placeholder="name@nexus.internal"
+                placeholder="name@ezbill.internal"
                 style={{
                   width: '100%',
                   padding: '10px 14px 10px 38px',
@@ -401,7 +401,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
               <span>Authenticating...</span>
             ) : (
               <>
-                <span>Sign in & Enter Nexus OS</span>
+                <span>Sign in & Enter EZbill Workspace</span>
                 <ArrowRight size={15} />
               </>
             )}

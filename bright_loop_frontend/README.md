@@ -1,4 +1,4 @@
-# Alwayzz & EZbill
+# EZbill Subscription & Billing Operating System
 
 A unified creative agency landing platform and enterprise subscription management operating system built with React 19, TypeScript, Vite, and custom CSS.
 
@@ -9,7 +9,7 @@ A unified creative agency landing platform and enterprise subscription managemen
 ```
                                       ┌────────────────────────────────────────┐
                                       │              Browser Client            │
-                                      │  (Alwayzz Landing Hero + Nexus OS)     │
+                                      │  (EZbill Landing Hero + EZbill Workspace)     │
                                       └──────────────────┬─────────────────────┘
                                                          │
                                                /api/* HTTP Fetch
@@ -36,7 +36,7 @@ A unified creative agency landing platform and enterprise subscription managemen
                                       └────────────────────────────────────────┘
 ```
 
-### 1. Landing Experience (Alwayzz)
+### 1. Landing Experience (EZbill)
 - **Design Philosophy**: Minimalist, black-and-white editorial aesthetic with tight negative letter-spacing (`-0.08em` to `-0.04em`).
 - **Typography**: Google Fonts `Source Serif 4` (weights 400, 600, italic), `Inter` (weights 400, 500, 600, 700), and `Cedarville Cursive` for brand logos.
 - **Custom CSS**: Pure CSS variables (`--bg`, `--text`, `--muted`, `--button-bg`, `--button-text`, `--border-soft`, `--green`), hardware-accelerated keyframe animations (`line-pulse`, `marquee-left`), curved line borders (`2.5px solid #FCFAF8`, 80% radius), and progressive edge fade blur.
@@ -50,7 +50,7 @@ A unified creative agency landing platform and enterprise subscription managemen
 Integrated subscription lifecycle suite adhering to strict accounting and operational integrity:
 - **Shared Design System** (`src/components/nexus/DesignSystem.tsx`):
   - Standardized badges (`StatusBadge`), Stat cards (`StatCard`), Page headers, and empty states.
-  - Consistent border radiuses, typography, and palette mirroring the Alwayzz aesthetic.
+  - Consistent border radiuses, typography, and palette mirroring the EZbill aesthetic.
 - **Overview Dashboard** (`src/components/nexus/DashboardView.tsx`):
   - Real-time calculated MRR (normalizing monthly, quarterly `/3`, and annual `/12` billing intervals).
   - Calculated ARR (`MRR * 12`).
@@ -162,7 +162,7 @@ npm run build
 ## Walkthrough: End-to-End Subscription Workflow
 
 1. **Accessing the Operating System**:
-   - From the Alwayzz landing page, click the **"Nexus OS"** button in the top navigation bar or the mobile drawer.
+   - From the EZbill landing page, click the **"EZbill Workspace"** button in the top navigation bar or the mobile drawer.
 2. **Review Executive Metrics**:
    - The Overview dashboard reflects real-time MRR ($10,490/mo), ARR ($125,880), Invoiced AR ($12,390), and Cleared Cash ($9,990).
 3. **Convert a Quotation**:
