@@ -127,6 +127,11 @@ odoo/
 │   ├── billing_routes.ts        # Express endpoints for billing operations
 │   ├── discount_manager.ts      # Discount validation & cap enforcement
 │   └── tax_config.ts            # Indian GST (CGST/SGST/IGST) calculations
+├── workflow/                    # TypeScript quotation & subscription lifecycle engine
+│   ├── quotation_engine.ts      # Line item calculations, discounts, taxes & quote state machine
+│   ├── subscription_engine.ts   # Subscription lifecycle, proration math & renewal key generator
+│   ├── workflow_routes.ts       # Express endpoints for quotations and subscriptions
+│   └── test_workflow.ts         # Automated test suite (23/23 tests passing)
 ├── billing_engine/              # Python billing engine package (managed with uv)
 │   ├── pyproject.toml           # uv project configuration
 │   ├── src/billing_engine/      # Core Python financial modules
@@ -139,13 +144,15 @@ odoo/
 │       └── test_billing.py
 ├── bright_loop_frontend/        # Vite + Express full-stack application
 │   ├── src/                     # React components, pages, and API client
-│   │   ├── api/client.ts        # Typed API client SDK (includes api.billing.*)
-│   │   ├── components/nexus/    # Workspace, billing, and reports views
+│   │   ├── api/client.ts        # Typed API client SDK (api.quotations.* & api.subscriptions.*)
+│   │   ├── components/nexus/    # Workspace, quotations, subscriptions, billing views
+│   │   ├── workflow/            # Integrated workflow routes & calculation engines
 │   │   └── billing/             # Integrated billing routes & models
 │   ├── server.ts                # Express server mounting API & Vite middleware
 │   └── package.json
 ├── docs/                        # Project documentation
-│   └── BILLING_ENGINE.md        # Complete Team 3 billing specifications
+│   ├── BILLING_ENGINE.md        # Complete Team 3 billing specifications
+│   └── WORKFLOW_ENGINE.md       # Complete Team 2 quotation & subscription lifecycle specifications
 ├── README.md                    # Project overview and coordination guide
 └── .gitignore                   # Ignores .venv, node_modules, and cache files
 ```
@@ -164,13 +171,21 @@ odoo/
 
 ```powershell
 cd bright_loop_frontend
-npm install
+npm install --legacy-peer-deps
 npm run dev
 ```
 
 The application runs on `http://localhost:3000`.
 
-### 2. Run the Billing Engine Test Suite (with `uv`)
+### 2. Run the Workflow Engine Test Suite (Team 2)
+
+```powershell
+cd bright_loop_frontend
+npm test
+```
+*Executes 23 automated tests covering quotation calculations, state transitions, revisions, subscriptions lifecycle, upgrades/downgrades with proration, renewals, and cancellations.*
+
+### 3. Run the Billing Engine Test Suite (Team 3 with `uv`)
 
 ```powershell
 cd billing_engine
@@ -192,22 +207,22 @@ uv run pytest
 
 ## 📋 Git Workflow
 
-- Work strictly on your designated team branch: `team3/billing`.
+- Work strictly on your designated team branch (e.g. `team2/workflow`).
 - Do not commit directly to `main`.
 - Make small, incremental, meaningful commits.
 - Push changes to your branch and create pull requests targeting `integration`.
 
 ```bash
 # Checkout working branch
-git checkout team3/billing
+git checkout team2/workflow
 
 # Make changes and test
-uv run pytest
+npm test
 
 # Commit and push
 git add .
-git commit -m "feat(billing): description of change"
-git push origin team3/billing
+git commit -m "feat(workflow): description of change"
+git push origin team2/workflow
 ```
 
 ---
@@ -234,8 +249,15 @@ Every feature is developed and verified against these standards:
 - [x] Implement refund lifecycle and balance enforcement (`team3/billing` - Completed)
 - [x] Implement payment reconciliation audit (`team3/billing` - Completed)
 - [x] Add automated test suite with `uv run pytest` (`team3/billing` - 10/10 Passed)
+- [x] Complete quotation and subscription workflows (`team2/workflow` - Completed)
+- [x] Implement quotation creation, line item calculations, and revision tracking (`team2/workflow` - Completed)
+- [x] Implement safe idempotent quotation-to-subscription conversion (`team2/workflow` - Completed)
+- [x] Implement subscription lifecycle state machine and trial periods (`team2/workflow` - Completed)
+- [x] Implement mid-cycle plan upgrades/downgrades with mathematical proration (`team2/workflow` - Completed)
+- [x] Implement automated renewal engine and billing period key idempotency (`team2/workflow` - Completed)
+- [x] Implement immediate vs end-of-period cancellations (`team2/workflow` - Completed)
+- [x] Add automated test suite with `npm test` (`team2/workflow` - 23/23 Passed)
 - [ ] Complete customer, product, and plan management (Team 1)
-- [ ] Complete quotation and subscription workflows (Team 2)
 - [ ] Build unified dashboard and customer portal integration (Team 4)
 - [ ] Final end-to-end integration test
 
