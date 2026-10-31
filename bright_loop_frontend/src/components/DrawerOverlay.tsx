@@ -15,12 +15,12 @@ export const DrawerOverlay: React.FC<DrawerOverlayProps> = ({
     id: 'projects' | 'plans' | 'team' | 'faqs' | 'contact' | 'nexus';
     label: string;
   }> = [
-    { id: 'projects', label: 'Projects' },
-    { id: 'plans', label: 'Plans' },
+    { id: 'projects', label: 'Solutions' },
+    { id: 'plans', label: 'Pricing Plans' },
     { id: 'team', label: 'Team' },
     { id: 'faqs', label: 'FAQs' },
     { id: 'contact', label: 'Get in Touch' },
-    { id: 'nexus', label: 'Nexus OS' },
+    { id: 'nexus', label: 'EZbill Workspace' },
   ];
 
   const handleLinkClick = (id: 'projects' | 'plans' | 'team' | 'faqs' | 'contact' | 'nexus') => {
@@ -50,8 +50,8 @@ export const DrawerOverlay: React.FC<DrawerOverlayProps> = ({
       </div>
 
       <footer className="drawer-footer">
-        <span>© {new Date().getFullYear()} Brightloop Nexus Inc. All rights reserved.</span>
-        <span>Crafted with obsessive precision.</span>
+        <span>© {new Date().getFullYear()} EZbill Inc. All rights reserved.</span>
+        <span>Automated billing and financial clarity.</span>
       </footer>
     </div>
   );

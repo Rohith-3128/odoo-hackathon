@@ -17,9 +17,9 @@ export const Navbar: React.FC<NavbarProps> = ({
           type="button"
           className="navbar-logo"
           onClick={onLogoClick}
-          aria-label="Brightloop Nexus Home"
+          aria-label="EZbill Home"
         >
-          Brightloop Nexus<sup className="logo-trademark">®</sup>
+          EZbill<sup className="logo-trademark">®</sup>
         </button>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -27,7 +27,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             type="button"
             className="navbar-login-btn"
             onClick={onOpenLogin}
-            aria-label="Log in to Nexus OS"
+            aria-label="Log in to EZbill Workspace"
           >
             <LogIn size={15} />
             <span>Log in</span>
