@@ -1,5 +1,5 @@
 /**
- * Brightloop Nexus - Billing API Routes
+ * EZbill - Billing API Routes
  * Team 3: Billing & Financial Engine
  *
  * Express router that adds all billing endpoints to the existing server.

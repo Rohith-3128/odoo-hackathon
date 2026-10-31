@@ -1,5 +1,5 @@
 /**
- * Brightloop Nexus - Billing Engine Core
+ * EZbill - Billing Engine Core
  * Team 3: Billing & Financial Engine
  *
  * Central billing engine that calculates amounts, generates invoices,

@@ -1,5 +1,5 @@
 /**
- * Brightloop Nexus - Discount Management Module
+ * EZbill - Discount Management Module
  * Team 3: Billing & Financial Engine
  *
  * Supports percentage and fixed discounts with validity periods,
