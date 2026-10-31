@@ -40,27 +40,110 @@ export interface Plan {
 }
 
 export interface QuotationItem {
+  id?: string;
+  productId?: string;
+  productName?: string;
   planId: string;
   planName: string;
   quantity: number;
   unitPrice: number;
   discount: number;
+  discountType?: 'fixed' | 'percentage';
+  discountValue?: number;
+  discountAmount?: number;
+  taxRate?: number;
+  taxAmount?: number;
+  subtotal?: number;
   total: number;
+}
+
+export interface QuotationRevision {
+  revisionNumber: number;
+  revisedAt: string;
+  revisedBy: string;
+  previousQuoteId: string;
+  reason: string;
+  changesSummary: string;
 }
 
 export interface Quotation {
   id: string;
   quoteNumber: string;
+  revisionNumber?: number;
   customerId: string;
   customerName: string;
+  customerEmail?: string;
   items: QuotationItem[];
   subtotal: number;
   totalDiscount: number;
+  totalTax?: number;
   total: number;
-  status: 'draft' | 'sent' | 'accepted' | 'declined' | 'converted';
+  currency?: string;
+  status: 'draft' | 'sent' | 'accepted' | 'declined' | 'rejected' | 'expired' | 'converted';
   expiresAt: string;
   notes: string;
+  termsAndConditions?: string;
+  createdBy?: string;
   createdAt: string;
+  updatedAt?: string;
+  sentAt?: string;
+  deliveryStatus?: 'pending' | 'delivered' | 'failed';
+  acceptedAt?: string;
+  rejectedAt?: string;
+  rejectionReason?: string;
+  expiredAt?: string;
+  convertedAt?: string;
+  convertedSubscriptionId?: string;
+  revisions?: QuotationRevision[];
+}
+
+export interface CommercialTerms {
+  planId: string;
+  planName: string;
+  billingInterval: 'monthly' | 'quarterly' | 'annual';
+  unitPrice: number;
+  quantity: number;
+  discountAmount: number;
+  currency: string;
+  features: string[];
+}
+
+export interface SubscriptionAuditEvent {
+  id: string;
+  timestamp: string;
+  type: string;
+  actor: string;
+  previousStatus?: string;
+  newStatus?: string;
+  description: string;
+  details?: Record<string, any>;
+}
+
+export interface PlanChangeHistory {
+  id: string;
+  changedAt: string;
+  actor: string;
+  previousPlanId: string;
+  previousPlanName: string;
+  previousPrice: number;
+  newPlanId: string;
+  newPlanName: string;
+  newPrice: number;
+  changeType: 'upgrade' | 'downgrade' | 'lateral';
+  proration: {
+    periodStartDate: string;
+    periodEndDate: string;
+    effectiveDate: string;
+    totalDaysInPeriod: number;
+    daysRemaining: number;
+    oldPlanPrice: number;
+    newPlanPrice: number;
+    unusedOldPlanCredit: number;
+    proratedNewPlanDebit: number;
+    netAdjustment: number;
+    currency: string;
+  };
+  effectiveDate: string;
 }
 
 export interface Subscription {
@@ -68,18 +151,33 @@ export interface Subscription {
   subNumber: string;
   customerId: string;
   customerName: string;
+  customerEmail?: string;
   planId: string;
   planName: string;
-  status: 'active' | 'trialing' | 'paused' | 'canceled' | 'past_due';
+  quotationId?: string;
+  status: 'draft' | 'active' | 'trialing' | 'paused' | 'canceled' | 'past_due' | 'expired';
   price: number;
+  currency?: string;
   billingInterval: 'monthly' | 'quarterly' | 'annual';
+  startDate?: string;
+  trialStartDate?: string;
+  trialEndDate?: string;
   currentPeriodStart: string;
   currentPeriodEnd: string;
   nextBillingDate: string;
   canceledAt?: string;
+  cancellationRequestedAt?: string;
   effectiveCancellationDate?: string;
+  cancellationReason?: string;
+  cancellationType?: 'immediate' | 'end_of_period';
+  pausedAt?: string;
+  resumedAt?: string;
   autoRenew: boolean;
+  commercialTerms?: CommercialTerms;
+  planHistory?: PlanChangeHistory[];
+  history?: SubscriptionAuditEvent[];
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface InvoiceItem {
@@ -208,22 +306,69 @@ export const api = {
   },
 
   quotations: {
-    list: () => request<Quotation[]>('/api/quotations'),
+    list: async (status?: string, search?: string) => {
+      const params = new URLSearchParams();
+      if (status && status !== 'all') params.append('status', status);
+      if (search) params.append('search', search);
+      const res = await request<any>(`/api/quotations?${params}`);
+      return Array.isArray(res) ? res : res.quotations || [];
+    },
+    get: (id: string) =>
+      request<{ quotation: Quotation; customer: Customer; subscription?: Subscription }>(
+        `/api/quotations/${id}`
+      ),
     create: (data: {
       customerId: string;
-      planId: string;
-      quantity: number;
-      discount: number;
+      planId?: string;
+      items?: any[];
+      quantity?: number;
+      discount?: number;
+      discountType?: 'fixed' | 'percentage';
+      taxRate?: number;
       notes?: string;
+      termsAndConditions?: string;
       expiresDays?: number;
+      sendNow?: boolean;
     }) =>
       request<Quotation>('/api/quotations', {
         method: 'POST',
         body: JSON.stringify(data),
       }),
+    update: (id: string, data: any) =>
+      request<Quotation>(`/api/quotations/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      }),
+    send: (id: string) =>
+      request<Quotation>(`/api/quotations/${id}/send`, {
+        method: 'POST',
+      }),
     accept: (id: string) =>
       request<Quotation>(`/api/quotations/${id}/accept`, {
-        method: 'PUT',
+        method: 'POST',
+      }),
+    reject: (id: string, reason?: string) =>
+      request<Quotation>(`/api/quotations/${id}/reject`, {
+        method: 'POST',
+        body: JSON.stringify({ reason }),
+      }),
+    expire: (id: string) =>
+      request<Quotation>(`/api/quotations/${id}/expire`, {
+        method: 'POST',
+      }),
+    revise: (
+      id: string,
+      data: {
+        items?: any[];
+        discount?: number;
+        notes?: string;
+        expiresDays?: number;
+        reason?: string;
+      }
+    ) =>
+      request<{ originalQuote: Quotation; revisedQuote: Quotation }>(`/api/quotations/${id}/revise`, {
+        method: 'POST',
+        body: JSON.stringify(data),
       }),
     convert: (id: string) =>
       request<{ quotation: Quotation; subscription: Subscription; invoice: Invoice }>(
@@ -233,28 +378,86 @@ export const api = {
   },
 
   subscriptions: {
-    list: (status?: string, customerId?: string) => {
+    list: async (status?: string, customerId?: string, search?: string) => {
       const params = new URLSearchParams();
-      if (status) params.append('status', status);
+      if (status && status !== 'all') params.append('status', status);
       if (customerId) params.append('customerId', customerId);
-      return request<Subscription[]>(`/api/subscriptions?${params}`);
+      if (search) params.append('search', search);
+      const res = await request<any>(`/api/subscriptions?${params}`);
+      return Array.isArray(res) ? res : res.subscriptions || [];
     },
-    create: (data: { customerId: string; planId: string }) =>
-      request<{ subscription: Subscription; invoice: Invoice }>('/api/subscriptions', {
+    dueRenewal: (lookaheadDays: number = 0) =>
+      request<{ dueCount: number; asOfDate: string; subscriptions: Subscription[] }>(
+        `/api/subscriptions/due-renewal?lookaheadDays=${lookaheadDays}`
+      ),
+    get: (id: string) =>
+      request<{ subscription: Subscription; customer: Customer; invoices: Invoice[] }>(
+        `/api/subscriptions/${id}`
+      ),
+    getHistory: (id: string) =>
+      request<{
+        subscriptionId: string;
+        subNumber: string;
+        history: SubscriptionAuditEvent[];
+        planHistory: PlanChangeHistory[];
+      }>(`/api/subscriptions/${id}/history`),
+    create: (data: {
+      customerId: string;
+      planId: string;
+      trialDays?: number;
+      autoRenew?: boolean;
+      startImmediately?: boolean;
+    }) =>
+      request<{ subscription: Subscription; invoice?: Invoice }>('/api/subscriptions', {
         method: 'POST',
         body: JSON.stringify(data),
       }),
+    activate: (id: string) =>
+      request<Subscription>(`/api/subscriptions/${id}/activate`, { method: 'POST' }),
     pause: (id: string) =>
-      request<Subscription>(`/api/subscriptions/${id}/pause`, { method: 'PUT' }),
+      request<Subscription>(`/api/subscriptions/${id}/pause`, { method: 'POST' }),
     resume: (id: string) =>
-      request<Subscription>(`/api/subscriptions/${id}/resume`, { method: 'PUT' }),
-    cancel: (id: string) =>
-      request<Subscription>(`/api/subscriptions/${id}/cancel`, { method: 'PUT' }),
-    changePlan: (id: string, newPlanId: string) =>
-      request<Subscription>(`/api/subscriptions/${id}/plan`, {
-        method: 'PUT',
+      request<Subscription>(`/api/subscriptions/${id}/resume`, { method: 'POST' }),
+    prorationPreview: (id: string, newPlanId: string) =>
+      request<{
+        subscriptionId: string;
+        subNumber: string;
+        currentPlan: any;
+        targetPlan: any;
+        proration: any;
+      }>(`/api/subscriptions/${id}/proration-preview`, {
+        method: 'POST',
         body: JSON.stringify({ newPlanId }),
       }),
+    changePlan: (id: string, newPlanId: string) =>
+      request<{
+        subscription: Subscription;
+        planChange: PlanChangeHistory;
+        proration: any;
+        adjustmentInvoice?: Invoice;
+      }>(`/api/subscriptions/${id}/change-plan`, {
+        method: 'POST',
+        body: JSON.stringify({ newPlanId }),
+      }),
+    cancel: (id: string, type: 'immediate' | 'end_of_period' = 'end_of_period', reason?: string) =>
+      request<Subscription>(`/api/subscriptions/${id}/cancel`, {
+        method: 'POST',
+        body: JSON.stringify({ type, reason }),
+      }),
+    renew: (id: string) =>
+      request<{ subscription: Subscription; invoice: Invoice; billingPeriodKey: string }>(
+        `/api/subscriptions/${id}/renew`,
+        { method: 'POST' }
+      ),
+    renewBatch: () =>
+      request<{
+        runAt: string;
+        dueFound: number;
+        processed: number;
+        errorsCount: number;
+        results: any[];
+        errors: any[];
+      }>('/api/subscriptions/renew-batch', { method: 'POST' }),
   },
 
   invoices: {
