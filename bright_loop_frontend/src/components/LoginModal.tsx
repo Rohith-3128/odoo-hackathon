@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { X, Lock, Mail, ArrowRight, CheckCircle2, Shield, User as UserIcon } from 'lucide-react';
+import { X, Lock, Mail, ArrowRight, Shield } from 'lucide-react';
 import { api, User } from '../api/client';
 
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenSignIn?: () => void;
   onLoginSuccess: (user: User) => void;
 }
 
 export const LoginModal: React.FC<LoginModalProps> = ({
   isOpen,
   onClose,
+  onOpenSignIn,
   onLoginSuccess,
 }) => {
   const [users, setUsers] = useState<User[]>([]);
@@ -401,11 +403,45 @@ export const LoginModal: React.FC<LoginModalProps> = ({
               <span>Authenticating...</span>
             ) : (
               <>
-                <span>Sign in & Enter EZbill Workspace</span>
+                <span>Log in & Enter EZbill Workspace</span>
                 <ArrowRight size={15} />
               </>
             )}
           </button>
+
+          {/* Don't have an account? Sign in as new person */}
+          {onOpenSignIn && (
+            <div
+              style={{
+                textAlign: 'center',
+                marginTop: '16px',
+                fontSize: '13px',
+                color: 'var(--muted)',
+              }}
+            >
+              Don't have an account?{' '}
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenSignIn();
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#0a0a0a',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                  padding: '0 2px',
+                  fontSize: '13px',
+                  fontFamily: 'inherit',
+                }}
+              >
+                Sign in as a new person
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </div>

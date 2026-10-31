@@ -429,6 +429,51 @@ async function startServer() {
     res.json({ user });
   });
 
+  app.post('/api/auth/register', (req, res) => {
+    const { name, email, company, role, phone, address } = req.body;
+    if (!name || !email) {
+      return res.status(400).json({ error: 'Name and email are required.' });
+    }
+
+    const existingUser = DB.users.find(
+      (u) => u.email.toLowerCase() === email.toLowerCase()
+    );
+    if (existingUser) {
+      return res.status(400).json({ error: 'An account with this email already exists.' });
+    }
+
+    const userRole = role === 'admin' || role === 'finance' || role === 'sales' ? role : 'customer';
+
+    let customerId: string | undefined;
+    if (userRole === 'customer') {
+      const newCust: Customer = {
+        id: `cust-${Date.now()}`,
+        name,
+        company: company || `${name}'s Organization`,
+        email,
+        phone: phone || '',
+        address: address || '',
+        status: 'active',
+        createdAt: new Date().toISOString(),
+      };
+      DB.customers.unshift(newCust);
+      customerId = newCust.id;
+    }
+
+    const newUser: User = {
+      id: `usr-${Date.now()}`,
+      name,
+      email,
+      role: userRole,
+      customerId,
+    };
+
+    DB.users.push(newUser);
+    logActivity('user_registered', `New ${userRole} account registered for ${name} (${email}).`, 'Auth');
+
+    res.status(201).json({ user: newUser });
+  });
+
   // -------------------------------------------------------------
   // CUSTOMERS APIs
   // -------------------------------------------------------------

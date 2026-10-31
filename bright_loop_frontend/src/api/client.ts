@@ -258,6 +258,18 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 export const api = {
   auth: {
     getUsers: () => request<User[]>('/api/auth/users'),
+    register: (data: {
+      name: string;
+      email: string;
+      company?: string;
+      role?: 'admin' | 'finance' | 'sales' | 'customer';
+      phone?: string;
+      address?: string;
+    }) =>
+      request<{ user: User }>('/api/auth/register', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
     login: (email: string) =>
       request<{ user: User }>('/api/auth/login', {
         method: 'POST',
