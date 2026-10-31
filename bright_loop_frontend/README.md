@@ -1,4 +1,4 @@
-# Alwayzz & Brightloop Nexus
+# Alwayzz & EZbill
 
 A unified creative agency landing platform and enterprise subscription management operating system built with React 19, TypeScript, Vite, and custom CSS.
 
@@ -46,7 +46,7 @@ A unified creative agency landing platform and enterprise subscription managemen
   - 15-minute intro booking modal with calendar date selection and validation against double-booking.
   - Informational overlays for Projects, Team, FAQs, and Contact.
 
-### 2. Brightloop Nexus (Subscription Operating System)
+### 2. EZbill (Subscription Operating System)
 Integrated subscription lifecycle suite adhering to strict accounting and operational integrity:
 - **Shared Design System** (`src/components/nexus/DesignSystem.tsx`):
   - Standardized badges (`StatusBadge`), Stat cards (`StatCard`), Page headers, and empty states.

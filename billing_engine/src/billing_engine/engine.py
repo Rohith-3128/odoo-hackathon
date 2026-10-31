@@ -1,5 +1,5 @@
 """
-Brightloop Nexus - Central Billing Engine
+EZbill - Central Billing Engine
 Team 3: Billing & Financial Engine
 """
 

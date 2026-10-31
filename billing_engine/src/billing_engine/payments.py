@@ -1,5 +1,5 @@
 """
-Brightloop Nexus - Payments, Refunds & Reconciliation Engines
+EZbill - Payments, Refunds & Reconciliation Engines
 Team 3: Billing & Financial Engine
 """
 

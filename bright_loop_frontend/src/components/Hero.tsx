@@ -19,12 +19,12 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPlans, onOpenBooking, onOpenLo
 
       {/* Title */}
       <h1 className="hero-title">
-        Premium creative <span className="serif italic">Brightloop Nexus</span><sup>®</sup> on demand.
+        Intelligent billing &amp; subscriptions with <span className="serif italic">EZbill</span><sup>®</sup> on demand.
       </h1>
 
       {/* Subtitle */}
       <p className="hero-subtitle">
-        A flexible design partnership and subscription operating system for founders, brands, and modern software teams.
+        A unified recurring billing, invoice ledger, GST tax engine, and subscription management operating system for modern business teams.
       </p>
 
       {/* CTA Row */}
@@ -47,7 +47,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPlans, onOpenBooking, onOpenLo
         >
           <img
             src="https://framerusercontent.com/images/hfneFL6CHBi5BnNvCeOaqU9HqE4.png"
-            alt="Creative Director Avatar"
+            alt="Billing Advisor Avatar"
             className="btn-book-avatar"
             width={40}
             height={40}
@@ -83,7 +83,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPlans, onOpenBooking, onOpenLo
           onMouseEnter={(e) => (e.currentTarget.style.color = '#0a0a0a')}
           onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--muted)')}
         >
-          Already a customer or team member? Log in to Nexus OS →
+          Already a customer or team member? Log in to EZbill Workspace →
         </button>
       </div>
 

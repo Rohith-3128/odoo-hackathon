@@ -1,5 +1,5 @@
 /**
- * Brightloop Nexus - Tax Configuration Module
+ * EZbill - Tax Configuration Module
  * Team 3: Billing & Financial Engine
  *
  * Supports configurable tax rules including Indian GST (CGST/SGST/IGST).

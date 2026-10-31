@@ -1,5 +1,5 @@
 /**
- * Brightloop Nexus - Production API Client
+ * EZbill - Production API Client
  */
 
 export interface User {

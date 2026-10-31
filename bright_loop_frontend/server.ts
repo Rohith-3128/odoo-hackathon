@@ -8,7 +8,7 @@ import { workflowRoutes } from './src/workflow/workflow_routes';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Initial In-Memory Authority Database for Brightloop Nexus
+// Initial In-Memory Authority Database for EZbill
 interface User {
   id: string;
   name: string;
@@ -138,9 +138,9 @@ interface ActivityEvent {
 // Database state
 const DB = {
   users: [
-    { id: 'usr-1', name: 'Julian Vance', email: 'julian@brightloopnexus.io', role: 'admin' },
-    { id: 'usr-2', name: 'Elena Rostova', email: 'elena@brightloopnexus.io', role: 'finance' },
-    { id: 'usr-3', name: 'Marcus Chen', email: 'marcus@brightloopnexus.io', role: 'sales' },
+    { id: 'usr-1', name: 'Julian Vance', email: 'julian@ezbill.io', role: 'admin' },
+    { id: 'usr-2', name: 'Elena Rostova', email: 'elena@ezbill.io', role: 'finance' },
+    { id: 'usr-3', name: 'Marcus Chen', email: 'marcus@ezbill.io', role: 'sales' },
     { id: 'usr-4', name: 'Sarah Lin', email: 'sarah@auroraprotocol.io', role: 'customer', customerId: 'cust-1' },
     { id: 'usr-5', name: 'David Kim', email: 'david@cortexai.tech', role: 'customer', customerId: 'cust-2' },
   ] as User[],
@@ -189,8 +189,8 @@ const DB = {
   ] as Customer[],
 
   products: [
-    { id: 'prod-1', name: 'Nexus Core Platform', description: 'Real-time subscription engine and billing fabric', active: true },
-    { id: 'prod-2', name: 'Nexus Intelligence Suite', description: 'Advanced revenue analytics and forecasting models', active: true },
+    { id: 'prod-1', name: 'EZbill Core Billing Platform', description: 'Real-time subscription engine and billing fabric', active: true },
+    { id: 'prod-2', name: 'EZbill Revenue Intelligence Suite', description: 'Advanced revenue analytics and forecasting models', active: true },
   ] as Product[],
 
   plans: [
@@ -548,6 +548,7 @@ async function startServer() {
   // Note: Teammate 2 Quotations and Subscriptions routes are mounted above via workflowRoutes(DB, billingDB)
 
 
+
   // -------------------------------------------------------------
   // INVOICES & PAYMENTS APIs
   // -------------------------------------------------------------
@@ -714,7 +715,7 @@ async function startServer() {
   }
 
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`[Brightloop Nexus] Full-stack engine running on http://0.0.0.0:${PORT}`);
+    console.log(`[EZbill] Full-stack engine running on http://0.0.0.0:${PORT}`);
   });
 }
 

@@ -1,5 +1,5 @@
 """
-Automated Test Suite for Brightloop Nexus Billing Engine
+Automated Test Suite for EZbill Billing Engine
 Team 3: Billing & Financial Engine
 """
 

@@ -64,7 +64,7 @@ export const InfoModals: React.FC<InfoModalProps> = ({ type, onClose }) => {
                   year: '2025',
                 },
                 {
-                  title: 'Nexus Cloud',
+                  title: 'EZbill Cloud',
                   category: 'Developer Tools',
                   deliverables: 'Brand System, Documentation & Dashboard UI',
                   year: '2025',
@@ -159,7 +159,7 @@ export const InfoModals: React.FC<InfoModalProps> = ({ type, onClose }) => {
               Frequently Asked Questions
             </h2>
             <p style={{ color: 'var(--muted)', fontSize: '15px', marginBottom: '28px' }}>
-              Everything you need to know about how Brightloop Nexus operates.
+              Everything you need to know about how EZbill operates.
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -177,8 +177,8 @@ export const InfoModals: React.FC<InfoModalProps> = ({ type, onClose }) => {
                   a: 'No problem at all. We will iterate and revise until you are 100% satisfied. Revisions are unlimited.',
                 },
                 {
-                  q: 'Why choose Brightloop Nexus over a full-time senior hire?',
-                  a: 'A senior design director salary exceeds $180,000 plus benefits, equity, and onboarding overhead. With Brightloop Nexus, you gain immediate senior talent on demand, with the flexibility to pause when design needs slow down.',
+                  q: 'Why choose EZbill over fragmented billing systems?',
+                  a: 'A senior design director salary exceeds $180,000 plus benefits, equity, and onboarding overhead. With EZbill, you gain immediate senior talent on demand, with the flexibility to pause when design needs slow down.',
                 },
               ].map((item, idx) => {
                 const isOpen = activeFaq === idx;

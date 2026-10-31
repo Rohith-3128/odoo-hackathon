@@ -61,7 +61,7 @@ export const BillingView: React.FC = () => {
       <PageHeader
         title="Billing & Payment Ledger"
         description="Comprehensive accounting ledger distinguishing invoiced accounts receivable from cleared cash receipts."
-        breadcrumbs={['Brightloop Nexus', 'Billing & Payments']}
+        breadcrumbs={['EZbill', 'Billing & Payments']}
         action={
           <div style={{ display: 'flex', gap: '8px' }}>
             <button
@@ -303,7 +303,7 @@ export const BillingView: React.FC = () => {
                     <strong style={{ fontSize: '18px' }}>{formatCurrency(selectedInvoiceForPay.amountDue)}</strong>
                   </div>
                   <div style={{ fontSize: '12px', color: 'var(--muted)' }}>
-                    Payable to Brightloop Nexus Operating Account
+                    Payable to EZbill Operating Account
                   </div>
                 </div>
 
@@ -371,7 +371,7 @@ export const BillingView: React.FC = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid var(--border-soft)', paddingBottom: '20px', marginBottom: '24px' }}>
               <div>
                 <h1 style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '26px', fontWeight: 600 }}>
-                  Brightloop Nexus<sup style={{ fontStyle: 'normal', fontSize: '12px', marginLeft: '2px' }}>®</sup>
+                  EZbill<sup style={{ fontStyle: 'normal', fontSize: '12px', marginLeft: '2px' }}>®</sup>
                 </h1>
                 <p style={{ fontSize: '12px', color: 'var(--muted)', marginTop: '2px' }}>Enterprise Billing & Subscription Infrastructure</p>
               </div>
