@@ -289,4 +289,47 @@ export const api = {
         quotations: Quotation[];
       }>(`/api/portal/${customerId}`),
   },
+  billing: {
+    taxRules: () => request<any[]>('/api/billing/tax-rules'),
+    createTaxRule: (data: any) =>
+      request<any>('/api/billing/tax-rules', { method: 'POST', body: JSON.stringify(data) }),
+    toggleTaxRule: (id: string) =>
+      request<any>(`/api/billing/tax-rules/${id}/toggle`, { method: 'PUT' }),
+    discounts: () => request<any[]>('/api/billing/discounts'),
+    createDiscount: (data: any) =>
+      request<any>('/api/billing/discounts', { method: 'POST', body: JSON.stringify(data) }),
+    validateDiscount: (data: any) =>
+      request<any>('/api/billing/discounts/validate', { method: 'POST', body: JSON.stringify(data) }),
+    calculate: (data: any) =>
+      request<any>('/api/billing/calculate', { method: 'POST', body: JSON.stringify(data) }),
+    createInvoice: (data: any) =>
+      request<any>('/api/billing/invoices', { method: 'POST', body: JSON.stringify(data) }),
+    getInvoice: (id: string) => request<any>(`/api/billing/invoices/${id}`),
+    voidInvoice: (id: string) =>
+      request<any>(`/api/billing/invoices/${id}/void`, { method: 'PUT' }),
+    recordPayment: (data: any) =>
+      request<any>('/api/billing/payments', { method: 'POST', body: JSON.stringify(data) }),
+    requestRefund: (data: any) =>
+      request<any>('/api/billing/refunds', { method: 'POST', body: JSON.stringify(data) }),
+    approveRefund: (id: string) =>
+      request<any>(`/api/billing/refunds/${id}/approve`, { method: 'PUT' }),
+    completeRefund: (id: string) =>
+      request<any>(`/api/billing/refunds/${id}/complete`, { method: 'PUT' }),
+    rejectRefund: (id: string) =>
+      request<any>(`/api/billing/refunds/${id}/reject`, { method: 'PUT' }),
+    listRefunds: (status?: string) =>
+      request<any[]>(`/api/billing/refunds${status ? `?status=${status}` : ''}`),
+    runRecurring: () => request<any>('/api/billing/recurring/run', { method: 'POST' }),
+    upcomingRenewals: () => request<any>('/api/billing/recurring/upcoming'),
+    runReconciliation: () =>
+      request<any>('/api/billing/reconciliation/run', { method: 'POST' }),
+    getReconciliation: () => request<any[]>('/api/billing/reconciliation'),
+    getFinancialSummary: (startDate?: string, endDate?: string) => {
+      const p = new URLSearchParams();
+      if (startDate) p.append('startDate', startDate);
+      if (endDate) p.append('endDate', endDate);
+      return request<any>(`/api/billing/reports/summary?${p}`);
+    },
+    getOutstandingReport: () => request<any>('/api/billing/reports/outstanding'),
+  },
 };

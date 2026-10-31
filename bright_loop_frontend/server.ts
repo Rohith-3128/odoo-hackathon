@@ -2,6 +2,7 @@ import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { billingRoutes, createBillingDB } from './src/billing/billing_routes';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -403,6 +404,10 @@ async function startServer() {
   const PORT = 3000;
 
   app.use(express.json());
+
+  // Teammate 3: Billing & Financial Engine APIs
+  const billingDB = createBillingDB();
+  app.use(billingRoutes(DB, billingDB));
 
   // -------------------------------------------------------------
   // AUTHENTICATION APIs
