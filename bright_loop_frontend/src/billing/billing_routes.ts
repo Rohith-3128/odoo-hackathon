@@ -702,7 +702,7 @@ export function billingRoutes(DB: any, billingDB: BillingDB): Router {
     res.json({
       runAt: now.toISOString(),
       processed: results.length,
-      errors: errors.length,
+      errorsCount: errors.length,
       results,
       errors: errors,
     });

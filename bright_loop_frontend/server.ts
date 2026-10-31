@@ -3,6 +3,7 @@ import { createServer as createViteServer } from 'vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { billingRoutes, createBillingDB } from './src/billing/billing_routes';
+import { workflowRoutes } from './src/workflow/workflow_routes';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -409,6 +410,9 @@ async function startServer() {
   const billingDB = createBillingDB();
   app.use(billingRoutes(DB, billingDB));
 
+  // Teammate 2: Quotations & Subscription Lifecycle Workflow APIs
+  app.use(workflowRoutes(DB, billingDB));
+
   // -------------------------------------------------------------
   // AUTHENTICATION APIs
   // -------------------------------------------------------------
@@ -541,255 +545,9 @@ async function startServer() {
     res.status(201).json(newPlan);
   });
 
-  // -------------------------------------------------------------
-  // QUOTATIONS APIs
-  // -------------------------------------------------------------
-  app.get('/api/quotations', (req, res) => {
-    res.json(DB.quotations);
-  });
+  // Note: Teammate 2 Quotations and Subscriptions routes are mounted above via workflowRoutes(DB, billingDB)
 
-  app.post('/api/quotations', (req, res) => {
-    const { customerId, planId, quantity, discount, notes, expiresDays } = req.body;
-    const customer = DB.customers.find((c) => c.id === customerId);
-    const plan = DB.plans.find((p) => p.id === planId);
 
-    if (!customer || !plan) {
-      return res.status(400).json({ error: 'Valid customer and plan are required.' });
-    }
-
-    const qty = Math.max(1, Number(quantity) || 1);
-    const disc = Math.max(0, Number(discount) || 0);
-    const subtotal = plan.price * qty;
-    const total = Math.max(0, subtotal - disc);
-
-    const expiryDate = new Date();
-    expiryDate.setDate(expiryDate.getDate() + (Number(expiresDays) || 14));
-
-    const newQuote: Quotation = {
-      id: `quote-${Date.now()}`,
-      quoteNumber: `QUO-2026-${String(DB.quotations.length + 1).padStart(3, '0')}`,
-      customerId: customer.id,
-      customerName: customer.company,
-      items: [
-        {
-          planId: plan.id,
-          planName: plan.name,
-          quantity: qty,
-          unitPrice: plan.price,
-          discount: disc,
-          total,
-        },
-      ],
-      subtotal,
-      totalDiscount: disc,
-      total,
-      status: 'sent',
-      expiresAt: expiryDate.toISOString(),
-      notes: notes || 'Proposal terms based on EZbill subscription tier.',
-      createdAt: new Date().toISOString(),
-    };
-
-    DB.quotations.unshift(newQuote);
-    logActivity('quotation_created', `Quotation ${newQuote.quoteNumber} issued to ${customer.company}.`, 'Sales');
-    res.status(201).json(newQuote);
-  });
-
-  app.put('/api/quotations/:id/accept', (req, res) => {
-    const quote = DB.quotations.find((q) => q.id === req.params.id);
-    if (!quote) return res.status(404).json({ error: 'Quotation not found' });
-
-    quote.status = 'accepted';
-    logActivity('quotation_accepted', `Quotation ${quote.quoteNumber} accepted by customer.`, 'Customer');
-    res.json(quote);
-  });
-
-  app.post('/api/quotations/:id/convert', (req, res) => {
-    const quote = DB.quotations.find((q) => q.id === req.params.id);
-    if (!quote) return res.status(404).json({ error: 'Quotation not found' });
-    if (quote.status === 'converted') {
-      return res.status(400).json({ error: 'Quotation already converted to subscription' });
-    }
-
-    const item = quote.items[0];
-    const plan = DB.plans.find((p) => p.id === item.planId) || DB.plans[0];
-
-    const now = new Date();
-    const periodEnd = new Date(now);
-    periodEnd.setMonth(periodEnd.getMonth() + 1);
-
-    // Create Subscription
-    const newSub: Subscription = {
-      id: `sub-${Date.now()}`,
-      subNumber: `SUB-2026-${String(DB.subscriptions.length + 1).padStart(3, '0')}`,
-      customerId: quote.customerId,
-      customerName: quote.customerName,
-      planId: plan.id,
-      planName: plan.name,
-      status: 'active',
-      price: item.total,
-      billingInterval: plan.billingInterval,
-      currentPeriodStart: now.toISOString(),
-      currentPeriodEnd: periodEnd.toISOString(),
-      nextBillingDate: periodEnd.toISOString(),
-      autoRenew: true,
-      createdAt: now.toISOString(),
-    };
-
-    // Create Initial Invoice
-    const newInv: Invoice = {
-      id: `inv-${Date.now()}`,
-      invoiceNumber: `INV-2026-${String(DB.invoices.length + 1).padStart(3, '0')}`,
-      customerId: quote.customerId,
-      customerName: quote.customerName,
-      subscriptionId: newSub.id,
-      quotationId: quote.id,
-      items: [
-        {
-          description: `${plan.name} Subscription Initiation (via ${quote.quoteNumber})`,
-          amount: item.total,
-        },
-      ],
-      total: item.total,
-      amountPaid: 0,
-      amountDue: item.total,
-      status: 'unpaid',
-      dueDate: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-      createdAt: now.toISOString(),
-    };
-
-    quote.status = 'converted';
-    DB.subscriptions.unshift(newSub);
-    DB.invoices.unshift(newInv);
-
-    logActivity('quotation_converted', `Quotation ${quote.quoteNumber} converted into Subscription ${newSub.subNumber} & Invoice ${newInv.invoiceNumber}.`, 'System');
-
-    res.json({
-      quotation: quote,
-      subscription: newSub,
-      invoice: newInv,
-    });
-  });
-
-  // -------------------------------------------------------------
-  // SUBSCRIPTIONS APIs
-  // -------------------------------------------------------------
-  app.get('/api/subscriptions', (req, res) => {
-    const { status, customerId } = req.query;
-    let list = [...DB.subscriptions];
-
-    if (status && typeof status === 'string' && status !== 'all') {
-      list = list.filter((s) => s.status === status);
-    }
-    if (customerId && typeof customerId === 'string') {
-      list = list.filter((s) => s.customerId === customerId);
-    }
-
-    res.json(list);
-  });
-
-  app.post('/api/subscriptions', (req, res) => {
-    const { customerId, planId } = req.body;
-    const customer = DB.customers.find((c) => c.id === customerId);
-    const plan = DB.plans.find((p) => p.id === planId);
-
-    if (!customer || !plan) {
-      return res.status(400).json({ error: 'Valid customer and plan are required.' });
-    }
-
-    const now = new Date();
-    const periodEnd = new Date(now);
-    periodEnd.setMonth(periodEnd.getMonth() + 1);
-
-    const newSub: Subscription = {
-      id: `sub-${Date.now()}`,
-      subNumber: `SUB-2026-${String(DB.subscriptions.length + 1).padStart(3, '0')}`,
-      customerId: customer.id,
-      customerName: customer.company,
-      planId: plan.id,
-      planName: plan.name,
-      status: 'active',
-      price: plan.price,
-      billingInterval: plan.billingInterval,
-      currentPeriodStart: now.toISOString(),
-      currentPeriodEnd: periodEnd.toISOString(),
-      nextBillingDate: periodEnd.toISOString(),
-      autoRenew: true,
-      createdAt: now.toISOString(),
-    };
-
-    // Auto-generate invoice
-    const newInv: Invoice = {
-      id: `inv-${Date.now()}`,
-      invoiceNumber: `INV-2026-${String(DB.invoices.length + 1).padStart(3, '0')}`,
-      customerId: customer.id,
-      customerName: customer.company,
-      subscriptionId: newSub.id,
-      items: [{ description: `${plan.name} First Period Billing`, amount: plan.price }],
-      total: plan.price,
-      amountPaid: 0,
-      amountDue: plan.price,
-      status: 'unpaid',
-      dueDate: new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000).toISOString(),
-      createdAt: now.toISOString(),
-    };
-
-    DB.subscriptions.unshift(newSub);
-    DB.invoices.unshift(newInv);
-
-    logActivity('subscription_created', `Subscription ${newSub.subNumber} initiated for ${customer.company}.`, 'Admin');
-    res.status(201).json({ subscription: newSub, invoice: newInv });
-  });
-
-  app.put('/api/subscriptions/:id/pause', (req, res) => {
-    const sub = DB.subscriptions.find((s) => s.id === req.params.id);
-    if (!sub) return res.status(404).json({ error: 'Subscription not found' });
-
-    sub.status = 'paused';
-    sub.autoRenew = false;
-    logActivity('subscription_paused', `Subscription ${sub.subNumber} paused.`, 'Admin');
-    res.json(sub);
-  });
-
-  app.put('/api/subscriptions/:id/resume', (req, res) => {
-    const sub = DB.subscriptions.find((s) => s.id === req.params.id);
-    if (!sub) return res.status(404).json({ error: 'Subscription not found' });
-
-    sub.status = 'active';
-    sub.autoRenew = true;
-    logActivity('subscription_resumed', `Subscription ${sub.subNumber} resumed.`, 'Admin');
-    res.json(sub);
-  });
-
-  app.put('/api/subscriptions/:id/cancel', (req, res) => {
-    const sub = DB.subscriptions.find((s) => s.id === req.params.id);
-    if (!sub) return res.status(404).json({ error: 'Subscription not found' });
-
-    sub.status = 'canceled';
-    sub.canceledAt = new Date().toISOString();
-    sub.effectiveCancellationDate = sub.currentPeriodEnd; // Effective at current period end
-    sub.autoRenew = false;
-
-    logActivity('subscription_canceled', `Subscription ${sub.subNumber} scheduled for cancellation on ${sub.effectiveCancellationDate.slice(0, 10)}.`, 'Admin');
-    res.json(sub);
-  });
-
-  app.put('/api/subscriptions/:id/plan', (req, res) => {
-    const sub = DB.subscriptions.find((s) => s.id === req.params.id);
-    if (!sub) return res.status(404).json({ error: 'Subscription not found' });
-
-    const { newPlanId } = req.body;
-    const newPlan = DB.plans.find((p) => p.id === newPlanId);
-    if (!newPlan) return res.status(400).json({ error: 'Invalid plan selected' });
-
-    const prevPlan = sub.planName;
-    sub.planId = newPlan.id;
-    sub.planName = newPlan.name;
-    sub.price = newPlan.price;
-    sub.billingInterval = newPlan.billingInterval;
-
-    logActivity('subscription_plan_changed', `Subscription ${sub.subNumber} upgraded from ${prevPlan} to ${newPlan.name}.`, 'Admin');
-    res.json(sub);
-  });
 
   // -------------------------------------------------------------
   // INVOICES & PAYMENTS APIs
