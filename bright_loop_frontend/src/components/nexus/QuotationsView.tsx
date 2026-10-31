@@ -22,7 +22,7 @@ export const QuotationsView: React.FC = () => {
     taxRate: number;
   }>>([]);
   const [notes, setNotes] = useState('');
-  const [terms, setTerms] = useState('Payment due upon receipt. Subject to Brightloop Master Services Agreement.');
+  const [terms, setTerms] = useState('Payment due upon receipt. Subject to EZbill Master Services Agreement.');
   const [expiresDays, setExpiresDays] = useState(14);
   const [sendImmediately, setSendImmediately] = useState(true);
   const [formError, setFormError] = useState('');

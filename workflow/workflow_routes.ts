@@ -1,5 +1,5 @@
 /**
- * Brightloop Nexus - Quotation & Subscription Lifecycle API Routes
+ * EZbill - Quotation & Subscription Lifecycle API Routes
  * Team 2: Workflows & Subscription Lifecycle
  *
  * Exposes production RESTful endpoints for managing quotations,
@@ -259,8 +259,8 @@ export function workflowRoutes(DB: any, billingDB?: any): Router {
         currency: 'USD',
         status: initialStatus,
         expiresAt: expiry.toISOString(),
-        notes: notes || 'Proposal terms based on Brightloop Nexus subscription catalogue.',
-        termsAndConditions: termsAndConditions || 'Payment terms: Due upon receipt. Subject to Brightloop Master Services Agreement.',
+        notes: notes || 'Proposal terms based on EZbill subscription catalogue.',
+        termsAndConditions: termsAndConditions || 'Payment terms: Due upon receipt. Subject to EZbill Master Services Agreement.',
         createdBy: createdBy || 'Sales User',
         createdAt: now.toISOString(),
         updatedAt: now.toISOString(),
