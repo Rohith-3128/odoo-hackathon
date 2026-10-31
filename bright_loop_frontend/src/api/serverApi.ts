@@ -130,9 +130,9 @@ export interface ActivityEvent {
 // Global In-Memory Authoritative Database
 export const DB = {
   users: [
-    { id: 'usr-1', name: 'Julian Vance', email: 'julian@brightloopnexus.io', role: 'admin' },
-    { id: 'usr-2', name: 'Elena Rostova', email: 'elena@brightloopnexus.io', role: 'finance' },
-    { id: 'usr-3', name: 'Marcus Chen', email: 'marcus@brightloopnexus.io', role: 'sales' },
+    { id: 'usr-1', name: 'Julian Vance', email: 'julian@ezbill.io', role: 'admin' },
+    { id: 'usr-2', name: 'Elena Rostova', email: 'elena@ezbill.io', role: 'finance' },
+    { id: 'usr-3', name: 'Marcus Chen', email: 'marcus@ezbill.io', role: 'sales' },
     { id: 'usr-4', name: 'Sarah Lin', email: 'sarah@auroraprotocol.io', role: 'customer', customerId: 'cust-1' },
     { id: 'usr-5', name: 'David Kim', email: 'david@cortexai.tech', role: 'customer', customerId: 'cust-2' },
   ] as User[],
@@ -181,8 +181,8 @@ export const DB = {
   ] as Customer[],
 
   products: [
-    { id: 'prod-1', name: 'Nexus Core Platform', description: 'Real-time subscription engine and billing fabric', active: true },
-    { id: 'prod-2', name: 'Nexus Intelligence Suite', description: 'Advanced revenue analytics and forecasting models', active: true },
+    { id: 'prod-1', name: 'EZbill Core Billing Platform', description: 'Real-time subscription engine and billing fabric', active: true },
+    { id: 'prod-2', name: 'EZbill Revenue Intelligence Suite', description: 'Advanced revenue analytics and forecasting models', active: true },
   ] as Product[],
 
   plans: [
